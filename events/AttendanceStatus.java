@@ -1,3 +1,5 @@
+package events;
+
 /**
  * Etkinlik katilim durumu - Going/Interested/Maybe.
  * Plandaki 2.3 Attendance System.

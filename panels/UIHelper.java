@@ -1,3 +1,9 @@
+package panels;
+
+import events.*;
+import screens.*;
+import tools.*;
+
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;

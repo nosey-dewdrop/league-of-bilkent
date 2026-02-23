@@ -1,3 +1,5 @@
+package events;
+
 /**
  * Kulup hesabi - User sinifini extend eder (INHERITANCE).
  * isClub() ve getProfileBadge() override edilir (POLYMORPHISM).

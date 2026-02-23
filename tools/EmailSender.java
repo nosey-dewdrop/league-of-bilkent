@@ -1,3 +1,7 @@
+package tools;
+
+import events.*;
+
 import java.util.Properties;
 import java.util.Random;
 import javax.mail.*;

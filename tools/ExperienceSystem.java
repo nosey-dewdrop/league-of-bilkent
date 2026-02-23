@@ -1,3 +1,7 @@
+package tools;
+
+import events.*;
+
 import java.awt.Color;
 
 /**
