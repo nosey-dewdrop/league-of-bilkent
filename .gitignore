@@ -1,4 +1,6 @@
-credentials.properties
 *.class
+*.jar
+!lib/*.jar
+.DS_Store
 posters/
-*.class
+credentials.properties
