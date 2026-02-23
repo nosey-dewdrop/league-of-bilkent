@@ -9,7 +9,7 @@ public class LoginScreen extends JFrame {
     private ArrayList<User> users;
 
     public LoginScreen() {
-        setTitle("League of Bilkent - Login");
+        setTitle("League of Bilkent");
         setSize(AppConstants.LOGIN_WIDTH, AppConstants.LOGIN_HEIGHT);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -26,52 +26,76 @@ public class LoginScreen extends JFrame {
         JPanel main = new JPanel(new BorderLayout());
         main.setBackground(Color.WHITE);
 
-        // Header
-        JPanel header = new JPanel();
-        header.setLayout(new BoxLayout(header, BoxLayout.Y_AXIS));
-        header.setBackground(Color.WHITE);
-        header.setBorder(BorderFactory.createEmptyBorder(40, 0, 20, 0));
+        // Center content
+        JPanel center = new JPanel();
+        center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
+        center.setBackground(Color.WHITE);
+        center.setBorder(BorderFactory.createEmptyBorder(60, 60, 40, 60));
 
         JLabel titleLbl = new JLabel("League of Bilkent");
-        titleLbl.setFont(new Font("SansSerif", Font.BOLD, 26));
+        titleLbl.setFont(new Font("SansSerif", Font.BOLD, 24));
         titleLbl.setForeground(AppConstants.TEXT_PRI);
-        titleLbl.setAlignmentX(CENTER_ALIGNMENT);
-        header.add(titleLbl);
+        titleLbl.setAlignmentX(LEFT_ALIGNMENT);
+        center.add(titleLbl);
+        center.add(Box.createVerticalStrut(4));
 
-        JLabel subLbl = new JLabel("Campus Event Platform");
-        subLbl.setFont(AppConstants.F_SMALL);
+        JLabel subLbl = new JLabel("Sign in to continue");
+        subLbl.setFont(AppConstants.F_NORMAL);
         subLbl.setForeground(AppConstants.TEXT_SEC);
-        subLbl.setAlignmentX(CENTER_ALIGNMENT);
-        header.add(subLbl);
-        main.add(header, BorderLayout.NORTH);
+        subLbl.setAlignmentX(LEFT_ALIGNMENT);
+        center.add(subLbl);
+        center.add(Box.createVerticalStrut(32));
 
         // Tabs
         JTabbedPane tabs = new JTabbedPane();
         tabs.setFont(AppConstants.F_NORMAL);
+        tabs.setBackground(Color.WHITE);
         tabs.addTab("Login", createLoginPanel());
         tabs.addTab("Register", new RegisterScreen(this));
-        main.add(tabs, BorderLayout.CENTER);
+        tabs.setAlignmentX(LEFT_ALIGNMENT);
+        center.add(tabs);
 
+        main.add(center, BorderLayout.CENTER);
         setContentPane(main);
     }
 
     private JPanel createLoginPanel() {
-        JPanel panel = new JPanel(new GridBagLayout());
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBackground(Color.WHITE);
-        panel.setBorder(BorderFactory.createEmptyBorder(15, 50, 15, 50));
-        GridBagConstraints gc = UIHelper.createFullWidthGBC();
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
 
-        gc.gridy = 0; panel.add(UIHelper.createLabel("Username"), gc);
+        JLabel userLbl = new JLabel("Username");
+        userLbl.setFont(AppConstants.F_SMALL);
+        userLbl.setForeground(AppConstants.TEXT_SEC);
+        userLbl.setAlignmentX(LEFT_ALIGNMENT);
+        panel.add(userLbl);
+        panel.add(Box.createVerticalStrut(4));
+
         loginUsername = UIHelper.createStyledField();
-        gc.gridy = 1; panel.add(loginUsername, gc);
+        loginUsername.setAlignmentX(LEFT_ALIGNMENT);
+        loginUsername.setMaximumSize(new Dimension(Integer.MAX_VALUE, 36));
+        panel.add(loginUsername);
+        panel.add(Box.createVerticalStrut(14));
 
-        gc.gridy = 2; panel.add(UIHelper.createLabel("Password"), gc);
+        JLabel passLbl = new JLabel("Password");
+        passLbl.setFont(AppConstants.F_SMALL);
+        passLbl.setForeground(AppConstants.TEXT_SEC);
+        passLbl.setAlignmentX(LEFT_ALIGNMENT);
+        panel.add(passLbl);
+        panel.add(Box.createVerticalStrut(4));
+
         loginPassword = UIHelper.createStyledPasswordField();
-        gc.gridy = 3; panel.add(loginPassword, gc);
+        loginPassword.setAlignmentX(LEFT_ALIGNMENT);
+        loginPassword.setMaximumSize(new Dimension(Integer.MAX_VALUE, 36));
+        panel.add(loginPassword);
+        panel.add(Box.createVerticalStrut(20));
 
-        JButton btnLogin = UIHelper.createButton("Log in", AppConstants.ACCENT, Color.WHITE);
-        gc.gridy = 4; gc.insets = new Insets(15, 0, 6, 0);
-        panel.add(btnLogin, gc);
+        JButton btnLogin = UIHelper.createButton("Log in", AppConstants.PRIMARY, Color.WHITE);
+        btnLogin.setAlignmentX(LEFT_ALIGNMENT);
+        btnLogin.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
+        panel.add(btnLogin);
+        panel.add(Box.createVerticalStrut(10));
 
         JButton btnForgot = new JButton("Forgot Password?");
         btnForgot.setFont(AppConstants.F_SMALL);
@@ -79,8 +103,8 @@ public class LoginScreen extends JFrame {
         btnForgot.setBorderPainted(false);
         btnForgot.setContentAreaFilled(false);
         btnForgot.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        gc.gridy = 5; gc.insets = new Insets(0, 0, 0, 0);
-        panel.add(btnForgot, gc);
+        btnForgot.setAlignmentX(CENTER_ALIGNMENT);
+        panel.add(btnForgot);
 
         btnLogin.addActionListener(e -> handleLogin());
         loginPassword.addActionListener(e -> handleLogin());

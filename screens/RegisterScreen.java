@@ -53,7 +53,7 @@ public class RegisterScreen extends JPanel {
         String password = new String(passwordField.getPassword());
         boolean isClub = clubCheckBox.isSelected();
 
-        // ===== VALIDATION =====
+        // VALIDATION
         if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
             UIHelper.showError(this, "Please fill in all required fields!"); return;
         }
@@ -66,22 +66,45 @@ public class RegisterScreen extends JPanel {
         if (password.length() < AppConstants.MIN_PASSWORD_LENGTH) {
             UIHelper.showError(this, "Password must be at least " + AppConstants.MIN_PASSWORD_LENGTH + " characters!"); return;
         }
-
-        // ===== DUPLICATE CHECKS =====
         if (Database.getUserWithUsername(username) != null) {
             UIHelper.showError(this, "This username is already taken! Try another one."); return;
         }
         if (Database.isEmailTaken(email)) {
-            UIHelper.showError(this, "This email is already registered! Try logging in or use a different email."); return;
+            UIHelper.showError(this, "This email is already registered!"); return;
         }
-
         if (displayName.isEmpty()) displayName = username;
 
-        // ===== HASH PASSWORD =====
+        // SEND VERIFICATION EMAIL FIRST (before saving anything to DB)
+        verificationCode = EmailSender.generateCode();
+        boolean emailSent = false;
+        try {
+            emailSent = EmailSender.sendVerificationEmail(email, verificationCode);
+        } catch (Exception ex) {
+            System.err.println("Email error: " + ex.getMessage());
+        }
+
+        String input;
+        if (emailSent) {
+            input = JOptionPane.showInputDialog(this,
+                "Verification code sent to " + email + "\nEnter the 6-digit code:",
+                "Email Verification", JOptionPane.QUESTION_MESSAGE);
+        } else {
+            // Email failed — show code in popup for testing
+            input = JOptionPane.showInputDialog(this,
+                "Email could not be sent.\nYour verification code is: " + verificationCode + "\nEnter it below to confirm:",
+                "Email Verification (Fallback)", JOptionPane.WARNING_MESSAGE);
+        }
+
+        // VERIFY CODE
+        if (input == null || !input.trim().equals(String.valueOf(verificationCode))) {
+            UIHelper.showError(this, "Wrong code or cancelled. Registration failed.");
+            return;
+        }
+
+        // CODE CORRECT — NOW save to DB
         String salt = PasswordUtil.generateSalt();
         String hashed = PasswordUtil.hashPassword(password, salt);
 
-        // ===== CREATE USER =====
         User newUser;
         if (isClub) {
             newUser = new ClubUser(username, displayName, email, hashed, salt,
@@ -90,49 +113,26 @@ public class RegisterScreen extends JPanel {
             newUser = new User(username, displayName, email, hashed, salt,
                 "League of Bilkent user");
         }
-
+        newUser.setVerified(true);
         Database.addToDatabase(newUser);
+        Database.updateUserVerified(username, true);
 
-        // ===== EMAIL VERIFICATION =====
-        verificationCode = EmailSender.generateCode();
-        boolean emailSent = EmailSender.sendVerificationEmail(email, verificationCode);
-
-        if (!emailSent) {
-            System.out.println("[EMAIL FALLBACK] Verification code: " + verificationCode);
+        // INTEREST SELECTION
+        InterestSelectionDialog dialog = new InterestSelectionDialog(
+            SwingUtilities.getWindowAncestor(this), new ArrayList<>());
+        dialog.setVisible(true);
+        if (dialog.isConfirmed()) {
+            Database.setInterests(username, dialog.getSelectedInterests());
         }
 
-        String input = JOptionPane.showInputDialog(this,
-            emailSent ? "Verification code sent to " + email + ".\nEnter the 6-digit code:"
-                      : "Email could not be sent.\nVerification code (check console): " + verificationCode + "\nEnter code:",
-            "Email Verification", JOptionPane.QUESTION_MESSAGE);
+        loginScreen.refreshUsers();
+        UIHelper.showSuccess(this, "Registration successful! You can now log in.");
 
-        if (input != null && input.trim().equals(String.valueOf(verificationCode))) {
-            newUser.setVerified(true);
-            Database.updateUserVerified(username, true);
-
-            // ===== INTEREST SELECTION =====
-            InterestSelectionDialog dialog = new InterestSelectionDialog(
-                SwingUtilities.getWindowAncestor(this), new ArrayList<>());
-            dialog.setVisible(true);
-
-            if (dialog.isConfirmed()) {
-                ArrayList<String> interests = dialog.getSelectedInterests();
-                Database.setInterests(username, interests);
-            }
-
-            loginScreen.refreshUsers();
-            UIHelper.showSuccess(this, "Registration successful! You can now log in.");
-
-            // Clear fields
-            usernameField.setText("");
-            displayNameField.setText("");
-            emailField.setText("");
-            passwordField.setText("");
-            clubCheckBox.setSelected(false);
-        } else {
-            // Wrong code or cancelled — delete the unverified user
-            Database.deleteFromDatabase(newUser);
-            UIHelper.showError(this, "Wrong code! Registration cancelled.");
-        }
+        // Clear fields
+        usernameField.setText("");
+        displayNameField.setText("");
+        emailField.setText("");
+        passwordField.setText("");
+        clubCheckBox.setSelected(false);
     }
 }

@@ -12,8 +12,14 @@ public class SearchPanel extends JPanel {
         this.home = home;
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
-        setBorder(BorderFactory.createEmptyBorder(32, 48, 20, 48));
+        setBorder(BorderFactory.createEmptyBorder(28, 40, 20, 40));
         buildUI();
+    }
+
+    /** Called from top search bar */
+    public void searchFor(String query) {
+        searchField.setText(query);
+        performSearch();
     }
 
     private void buildUI() {
@@ -22,7 +28,8 @@ public class SearchPanel extends JPanel {
         header.setBackground(Color.WHITE);
 
         JLabel title = new JLabel("Search");
-        title.setFont(new Font("SansSerif", Font.BOLD, 28));
+        title.setFont(AppConstants.F_BIG);
+        title.setForeground(AppConstants.TEXT_PRI);
         title.setAlignmentX(LEFT_ALIGNMENT);
         header.add(title);
         header.add(Box.createVerticalStrut(12));
@@ -30,7 +37,7 @@ public class SearchPanel extends JPanel {
         JPanel searchRow = new JPanel(new BorderLayout(8, 0));
         searchRow.setBackground(Color.WHITE);
         searchRow.setAlignmentX(LEFT_ALIGNMENT);
-        searchRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 36));
+        searchRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
 
         searchField = UIHelper.createStyledField();
         searchField.setFont(AppConstants.F_NORMAL);
@@ -44,7 +51,7 @@ public class SearchPanel extends JPanel {
         header.add(searchRow);
         header.add(Box.createVerticalStrut(12));
 
-        // Tag search buttons
+        // Tag chips
         JPanel tagRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 4));
         tagRow.setBackground(Color.WHITE);
         tagRow.setAlignmentX(LEFT_ALIGNMENT);
@@ -52,14 +59,15 @@ public class SearchPanel extends JPanel {
             JButton chip = new JButton("#" + cat.toLowerCase());
             chip.setFont(AppConstants.F_TINY);
             chip.setBorderPainted(false);
-            chip.setBackground(new Color(0xF5, 0xF5, 0xF3));
+            chip.setBackground(AppConstants.PRIMARY_LIGHT);
+            chip.setForeground(AppConstants.TEXT_SEC);
             chip.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             chip.addActionListener(e -> { searchField.setText(cat.toLowerCase()); performSearch(); });
             tagRow.add(chip);
         }
         JScrollPane tagScroll = new JScrollPane(tagRow);
         tagScroll.setBorder(null);
-        tagScroll.setPreferredSize(new Dimension(0, 60));
+        tagScroll.setPreferredSize(new Dimension(0, 56));
         tagScroll.setAlignmentX(LEFT_ALIGNMENT);
         header.add(tagScroll);
         header.add(Box.createVerticalStrut(8));
@@ -88,21 +96,25 @@ public class SearchPanel extends JPanel {
         for (Event ev : events) {
             if (ev.matchesSearch(query)) {
                 foundEvent = true;
-                JButton btn = new JButton(ev.getTitle() + "  |  " + ev.getLocation() + "  |  " + ev.getDateStr());
+                JButton btn = new JButton(ev.getTitle() + "  \u2022  " + ev.getLocation() + "  \u2022  " + ev.getDateStr());
                 btn.setFont(AppConstants.F_NORMAL);
                 btn.setHorizontalAlignment(SwingConstants.LEFT);
                 btn.setBorderPainted(false);
                 btn.setBackground(Color.WHITE);
                 btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
                 btn.setAlignmentX(LEFT_ALIGNMENT);
-                btn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 32));
+                btn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 36));
+                btn.addMouseListener(new java.awt.event.MouseAdapter() {
+                    public void mouseEntered(java.awt.event.MouseEvent e) { btn.setBackground(AppConstants.PRIMARY_LIGHT); }
+                    public void mouseExited(java.awt.event.MouseEvent e) { btn.setBackground(Color.WHITE); }
+                });
                 btn.addActionListener(e -> home.showEventDetail(ev));
                 resultsPanel.add(btn);
             }
         }
         if (!foundEvent) resultsPanel.add(UIHelper.createSmallLabel("No events found."));
 
-        resultsPanel.add(Box.createVerticalStrut(12));
+        resultsPanel.add(Box.createVerticalStrut(16));
         resultsPanel.add(UIHelper.createSectionLabel("Users"));
         resultsPanel.add(Box.createVerticalStrut(4));
         ArrayList<User> users = Database.getAllUsers();
@@ -115,7 +127,7 @@ public class SearchPanel extends JPanel {
                 row.setAlignmentX(LEFT_ALIGNMENT);
                 row.add(UIHelper.createClickableUsername(u, home));
                 int xp = Database.getUserXP(u.getUsername());
-                JLabel tierLbl = new JLabel(AppConstants.getTierName(xp) + " | " + xp + " XP");
+                JLabel tierLbl = new JLabel(AppConstants.getTierName(xp) + " \u2022 " + xp + " XP");
                 tierLbl.setFont(AppConstants.F_TINY);
                 tierLbl.setForeground(AppConstants.getTierColor(xp));
                 row.add(tierLbl);

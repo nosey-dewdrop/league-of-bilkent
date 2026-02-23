@@ -90,10 +90,14 @@ public class ProfilePanel extends JPanel {
 
         ArrayList<String> followers = Database.getFollowers(user.getUsername());
         ArrayList<String> following = Database.getFollowing(user.getUsername());
-        JLabel statsLbl = new JLabel(followers.size() + " Followers  |  " + following.size() + " Following");
+        JLabel statsLbl = new JLabel("<html><u>" + followers.size() + " Followers</u>  |  <u>" + following.size() + " Following</u></html>");
         statsLbl.setFont(AppConstants.F_SMALL);
-        statsLbl.setForeground(AppConstants.TEXT_SEC);
+        statsLbl.setForeground(AppConstants.ACCENT);
+        statsLbl.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         statsLbl.setAlignmentX(RIGHT_ALIGNMENT);
+        statsLbl.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) { showFollowDialog(followers, following); }
+        });
         rightCol.add(statsLbl);
 
         if (isOtherUser) {
@@ -248,4 +252,55 @@ public class ProfilePanel extends JPanel {
         scroll.getVerticalScrollBar().setUnitIncrement(16);
         add(scroll, BorderLayout.CENTER);
     }
+
+    private void showFollowDialog(java.util.ArrayList<String> followers, java.util.ArrayList<String> following) {
+        JDialog dlg = new JDialog(javax.swing.SwingUtilities.getWindowAncestor(this), "Connections", java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+        dlg.setSize(380,480); dlg.setLocationRelativeTo(this);
+        JPanel root = new JPanel(new BorderLayout()); root.setBackground(Color.WHITE);
+        root.setBorder(BorderFactory.createEmptyBorder(12,16,12,16));
+        JPanel tabRow = new JPanel(new FlowLayout(FlowLayout.LEFT,8,0)); tabRow.setBackground(Color.WHITE);
+        JButton tabF = UIHelper.createButton("Followers ("+followers.size()+")",AppConstants.ACCENT,Color.WHITE);
+        JButton tabW = UIHelper.createOutlineButton("Following ("+following.size()+")",AppConstants.TEXT_SEC);
+        tabRow.add(tabF); tabRow.add(tabW);
+        JTextField search = UIHelper.createStyledField();
+        JPanel top = new JPanel(); top.setLayout(new BoxLayout(top,BoxLayout.Y_AXIS)); top.setBackground(Color.WHITE);
+        tabRow.setAlignmentX(LEFT_ALIGNMENT); search.setAlignmentX(LEFT_ALIGNMENT);
+        search.setMaximumSize(new Dimension(Integer.MAX_VALUE,32));
+        top.add(tabRow); top.add(Box.createVerticalStrut(8)); top.add(search);
+        root.add(top,BorderLayout.NORTH);
+        JPanel list = new JPanel(); list.setLayout(new BoxLayout(list,BoxLayout.Y_AXIS)); list.setBackground(Color.WHITE);
+        JScrollPane sc = new JScrollPane(list); sc.setBorder(null); root.add(sc,BorderLayout.CENTER);
+        final boolean[] mode = {true};
+        Runnable refresh = () -> { list.removeAll(); String q=search.getText().trim().toLowerCase();
+            java.util.ArrayList<String> src = mode[0]?followers:following;
+            for (String un:src) { if (!q.isEmpty()&&!un.toLowerCase().contains(q)) continue;
+                User u=Database.getUserWithUsername(un); if(u==null) continue;
+                int xp=Database.getUserXP(un);
+                JPanel row=new JPanel(new BorderLayout(8,0)); row.setBackground(Color.WHITE);
+                row.setBorder(BorderFactory.createEmptyBorder(6,4,6,4));
+                row.setMaximumSize(new Dimension(Integer.MAX_VALUE,44));
+                row.add(UIHelper.createAvatar(u.getDisplayName(),AppConstants.getTierColor(xp),28),BorderLayout.WEST);
+                JPanel nc=new JPanel(); nc.setLayout(new BoxLayout(nc,BoxLayout.Y_AXIS)); nc.setOpaque(false);
+                nc.add(new JLabel(u.getDisplayName()+(u.isVerified()?" \u2713":"" )));
+                JLabel sub=new JLabel("@"+un+"  "+AppConstants.getTierName(xp));
+                sub.setFont(AppConstants.F_TINY); sub.setForeground(AppConstants.getTierColor(xp)); nc.add(sub);
+                row.add(nc,BorderLayout.CENTER);
+                row.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                row.addMouseListener(new java.awt.event.MouseAdapter() {
+                    public void mouseEntered(java.awt.event.MouseEvent e){row.setBackground(AppConstants.PRIMARY_LIGHT);}
+                    public void mouseExited(java.awt.event.MouseEvent e){row.setBackground(Color.WHITE);}
+                    public void mouseClicked(java.awt.event.MouseEvent e){dlg.dispose();home.navigateToProfile(u);}
+                }); list.add(row);
+            } list.revalidate(); list.repaint(); };
+        tabF.addActionListener(e->{mode[0]=true;refresh.run();});
+        tabW.addActionListener(e->{mode[0]=false;refresh.run();});
+        search.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+            public void insertUpdate(javax.swing.event.DocumentEvent e){refresh.run();}
+            public void removeUpdate(javax.swing.event.DocumentEvent e){refresh.run();}
+            public void changedUpdate(javax.swing.event.DocumentEvent e){refresh.run();}});
+        refresh.run(); dlg.setContentPane(root); dlg.setVisible(true);
+    }
+
+
+    
 }

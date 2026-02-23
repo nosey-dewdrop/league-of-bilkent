@@ -65,31 +65,37 @@ public class SampleData {
             "EA-409", now.plusDays(18), now.plusDays(18).plusHours(3), now.plusDays(17), 80, "ieee_bilkent");
         e1.addTag("gamedev"); e1.addTag("software"); e1.setXpReward(15); e1.setMinTierIndex(1);
         int id1 = Database.addToDatabase(e1);
+        String p1 = PosterGenerator.generateDefault(e1); if(p1!=null) Database.updateEventImage(id1,p1);
 
         Event e2 = new Event(0, "Algorithm Contest", "Competitive programming challenge for all levels.",
             "B-Lab", now.plusDays(24), now.plusDays(24).plusHours(4), now.plusDays(23), 40, "ieee_bilkent");
         e2.addTag("algorithms"); e2.addTag("software"); e2.setXpReward(10);
         int id2 = Database.addToDatabase(e2);
+        String p2 = PosterGenerator.generateDefault(e2); if(p2!=null) Database.updateEventImage(id2,p2);
 
         Event e3 = new Event(0, "Acoustic Night", "Student musicians perform live at Odeon.",
             "Odeon", now.plusDays(30), now.plusDays(30).plusHours(3), now.plusDays(29), 100, "music_club");
         e3.addTag("music"); e3.addTag("concert"); e3.setXpReward(5);
         int id3 = Database.addToDatabase(e3);
+        String p3 = PosterGenerator.generateDefault(e3); if(p3!=null) Database.updateEventImage(id3,p3);
 
         Event e4 = new Event(0, "Python Workshop", "Beginner-friendly Python programming workshop.",
             "EA-Z03", now.plusDays(5), now.plusDays(5).plusHours(2), now.plusDays(4), 50, "damla");
         e4.addTag("python"); e4.addTag("education"); e4.setXpReward(10);
         int id4 = Database.addToDatabase(e4);
+        String p4 = PosterGenerator.generateDefault(e4); if(p4!=null) Database.updateEventImage(id4,p4);
 
         Event e5 = new Event(0, "Campus Run", "5km campus run - all fitness levels welcome!",
             "Main Gate", now.plusDays(7), now.plusDays(7).plusHours(2), now.plusDays(6), 200, "ali_k");
         e5.addTag("sports"); e5.addTag("fitness"); e5.setXpReward(5);
         int id5 = Database.addToDatabase(e5);
+        String p5 = PosterGenerator.generateDefault(e5); if(p5!=null) Database.updateEventImage(id5,p5);
 
         Event e6 = new Event(0, "Art Exhibition", "Student artwork showcase at the library.",
             "Library Foyer", now.plusDays(40), now.plusDays(41), now.plusDays(39), 150, "elif_s");
         e6.addTag("art"); e6.addTag("exhibition"); e6.setXpReward(5);
         int id6 = Database.addToDatabase(e6);
+        String p6 = PosterGenerator.generateDefault(e6); if(p6!=null) Database.updateEventImage(id6,p6);
 
         // Attendance
         Database.setAttendance(id1, "damla", AttendanceStatus.GOING);

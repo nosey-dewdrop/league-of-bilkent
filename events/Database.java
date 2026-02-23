@@ -9,8 +9,18 @@ public class Database {
     public static void createConnection() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
+            String dbUrl = AppConstants.DB_URL;
+            String dbUser = AppConstants.DB_USER;
+            String dbPass = AppConstants.DB_PASS;
+            try {
+                java.util.Properties creds = new java.util.Properties();
+                creds.load(new java.io.FileInputStream("credentials.properties"));
+                dbUrl = creds.getProperty("db.url", dbUrl);
+                dbUser = creds.getProperty("db.user", dbUser);
+                dbPass = creds.getProperty("db.password", dbPass);
+            } catch (Exception ignored) {}
             databaseConnection = DriverManager.getConnection(
-                AppConstants.DB_URL, AppConstants.DB_USER, AppConstants.DB_PASS);
+                dbUrl, dbUser, dbPass);
             createTables();
             System.out.println("MySQL connection complete");
         } catch (SQLException e) {
@@ -485,6 +495,11 @@ public class Database {
             if (rs.next()) return rs.getInt(1) > 0;
         } catch (SQLException e) { e.printStackTrace(); }
         return false;
+    }
+
+    public static void updateEventImage(int eventId, String path) {
+        try { PreparedStatement ps = databaseConnection.prepareStatement("UPDATE events SET image_path=? WHERE event_id=?");
+            ps.setString(1, path); ps.setInt(2, eventId); ps.executeUpdate(); } catch (SQLException e) { e.printStackTrace(); }
     }
 
     public static boolean isDatabaseEmpty() {
