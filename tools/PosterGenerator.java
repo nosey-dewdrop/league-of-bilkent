@@ -1,6 +1,8 @@
 package tools;
 
-import events.*;
+import model.*;
+import model.Event;
+import model.Event;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

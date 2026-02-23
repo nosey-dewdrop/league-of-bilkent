@@ -1,4 +1,4 @@
-package events;
+package model;
 
 /**
  * Kulup hesabi - User sinifini extend eder (INHERITANCE).

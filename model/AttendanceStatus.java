@@ -1,4 +1,4 @@
-package events;
+package model;
 
 /**
  * Etkinlik katilim durumu - Going/Interested/Maybe.
