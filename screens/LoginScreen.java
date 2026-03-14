@@ -6,20 +6,24 @@ import tools.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.*;
 import java.util.ArrayList;
 
 /*
  * ┌──────────────────────────────────────────────────────────────┐
  * │                  <<class>> LoginScreen                       │
  * │                    extends JFrame                            │
- * │              Login + Register tabbed window                  │
+ * │     Split-layout login: brand panel (left) + form (right)   │
  * ├──────────────────────────────────────────────────────────────┤
  * │ - loginUsername, loginPassword -> input fields               │
  * │ - users: ArrayList<User> -> cached user list                │
+ * │ - formContainer -> CardLayout for login/register switch     │
  * ├──────────────────────────────────────────────────────────────┤
  * │ + refreshUsers() -> reloads users from DB                   │
- * │ - buildUI() -> creates tabbed pane (Login + Register)       │
- * │ - createLoginPanel() -> login form with fields + buttons    │
+ * │ - buildUI() -> creates split layout                         │
+ * │ - buildBrandPanel() -> gradient left panel with branding    │
+ * │ - buildFormPanel() -> right panel with login/register forms │
+ * │ - createLoginForm() -> login fields + buttons               │
  * │ - handleLogin() -> validates credentials, opens HomeScreen  │
  * ├──────────────────────────────────────────────────────────────┤
  * │ USES:    Database, UIHelper, PasswordUtil, RegisterScreen,  │
@@ -32,6 +36,9 @@ public class LoginScreen extends JFrame {
     private JTextField loginUsername;
     private JPasswordField loginPassword;
     private ArrayList<User> users;
+    private CardLayout formCardLayout;
+    private JPanel formContainer;
+    private JButton tabLogin, tabRegister;
 
     public LoginScreen() {
         setTitle("League of Bilkent");
@@ -47,112 +54,427 @@ public class LoginScreen extends JFrame {
 
     private void buildUI() {
         JPanel main = new JPanel(new BorderLayout());
-        main.setBackground(AppConstants.BG_MAIN);
+        main.setBackground(Color.WHITE);
 
-        JPanel center = new JPanel();
-        center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
-        center.setOpaque(false);
-        center.setBorder(BorderFactory.createEmptyBorder(50, 60, 40, 60));
+        main.add(buildBrandPanel(), BorderLayout.WEST);
+        main.add(buildFormPanel(), BorderLayout.CENTER);
 
-        // Water drop + brand
-        JLabel dropEmoji = new JLabel("\uD83D\uDCA7");
-        dropEmoji.setFont(new Font("SansSerif", Font.PLAIN, 1));
-        dropEmoji.setAlignmentX(CENTER_ALIGNMENT);
-        center.add(dropEmoji);
-        center.add(Box.createVerticalStrut(8));
-
-        JLabel titleLbl = new JLabel("League of Bilkent");
-        titleLbl.setFont(new Font("SansSerif", Font.BOLD, 22));
-        titleLbl.setForeground(AppConstants.TEXT_PRI);
-        titleLbl.setAlignmentX(CENTER_ALIGNMENT);
-        center.add(titleLbl);
-        center.add(Box.createVerticalStrut(4));
-
-        JLabel subLbl = new JLabel("Campus Event Platform");
-        subLbl.setFont(AppConstants.F_SMALL);
-        subLbl.setForeground(AppConstants.TEXT_LIGHT);
-        subLbl.setAlignmentX(CENTER_ALIGNMENT);
-        center.add(subLbl);
-        center.add(Box.createVerticalStrut(28));
-
-        // Login card
-        JPanel card = new JPanel();
-        card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
-        card.setBackground(Color.WHITE);
-        card.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(AppConstants.BORDER, 1, true),
-            BorderFactory.createEmptyBorder(24, 24, 24, 24)));
-        card.setAlignmentX(CENTER_ALIGNMENT);
-
-        // Tabs
-        JTabbedPane tabs = new JTabbedPane();
-        tabs.setFont(AppConstants.F_NORMAL);
-        tabs.setBackground(Color.WHITE);
-        tabs.addTab("Login", createLoginPanel());
-        tabs.addTab("Register", new RegisterScreen(this));
-        tabs.setAlignmentX(LEFT_ALIGNMENT);
-        card.add(tabs);
-
-        center.add(card);
-        center.add(Box.createVerticalStrut(16));
-
-        JLabel footer = new JLabel("\uD83D\uDCA7 built by damla");
-        footer.setFont(AppConstants.F_TINY);
-        footer.setForeground(AppConstants.TEXT_MUTED);
-        footer.setAlignmentX(CENTER_ALIGNMENT);
-        center.add(footer);
-
-        main.add(center, BorderLayout.CENTER);
         setContentPane(main);
     }
 
-    private JPanel createLoginPanel() {
+    private JPanel buildBrandPanel() {
+        JPanel brand = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                int w = getWidth(), h = getHeight();
+
+                // Gradient background
+                g2.setPaint(new GradientPaint(0, 0, new Color(0x00, 0x96, 0xA6),
+                    w, h, new Color(0x00, 0x7D, 0x8C)));
+                g2.fillRect(0, 0, w, h);
+
+                // Decorative circles
+                g2.setColor(new Color(255, 255, 255, 18));
+                g2.fillOval(w - 100, -60, 200, 200);
+                g2.fillOval(-70, h - 120, 180, 180);
+                g2.fillOval(w / 2 - 50, h / 2 + 40, 120, 120);
+
+                g2.setColor(new Color(255, 255, 255, 10));
+                g2.fillOval(20, 60, 100, 100);
+                g2.fillOval(w - 60, h - 80, 90, 90);
+
+                g2.dispose();
+            }
+        };
+        brand.setPreferredSize(new Dimension(340, 0));
+        brand.setLayout(new BoxLayout(brand, BoxLayout.Y_AXIS));
+        brand.setBorder(BorderFactory.createEmptyBorder(60, 40, 40, 40));
+
+        brand.add(Box.createVerticalGlue());
+
+        // Logo circle
+        JPanel logoCircle = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new Color(255, 255, 255, 30));
+                g2.fillOval(0, 0, 72, 72);
+                g2.setColor(Color.WHITE);
+                g2.setFont(new Font("SansSerif", Font.PLAIN, 34));
+                FontMetrics fm = g2.getFontMetrics();
+                String icon = "\uD83C\uDFC6";
+                g2.drawString(icon, 36 - fm.stringWidth(icon) / 2, 36 + fm.getAscent() / 3);
+                g2.dispose();
+            }
+        };
+        logoCircle.setOpaque(false);
+        logoCircle.setPreferredSize(new Dimension(72, 72));
+        logoCircle.setMaximumSize(new Dimension(72, 72));
+        logoCircle.setAlignmentX(LEFT_ALIGNMENT);
+        brand.add(logoCircle);
+        brand.add(Box.createVerticalStrut(24));
+
+        JLabel title = new JLabel("League of");
+        title.setFont(new Font("SansSerif", Font.PLAIN, 28));
+        title.setForeground(new Color(255, 255, 255, 180));
+        title.setAlignmentX(LEFT_ALIGNMENT);
+        brand.add(title);
+
+        JLabel title2 = new JLabel("Bilkent");
+        title2.setFont(new Font("SansSerif", Font.BOLD, 36));
+        title2.setForeground(Color.WHITE);
+        title2.setAlignmentX(LEFT_ALIGNMENT);
+        brand.add(title2);
+        brand.add(Box.createVerticalStrut(16));
+
+        JLabel tagline = new JLabel("<html>Discover events, connect<br>with your campus community,<br>and earn XP along the way.</html>");
+        tagline.setFont(new Font("SansSerif", Font.PLAIN, 13));
+        tagline.setForeground(new Color(255, 255, 255, 160));
+        tagline.setAlignmentX(LEFT_ALIGNMENT);
+        brand.add(tagline);
+        brand.add(Box.createVerticalStrut(32));
+
+        // Feature pills
+        String[] features = {"Events", "XP System", "Clubs", "Calendar"};
+        JPanel pillRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 6));
+        pillRow.setOpaque(false);
+        pillRow.setAlignmentX(LEFT_ALIGNMENT);
+        for (String feat : features) {
+            JLabel pill = new JLabel(feat);
+            pill.setFont(new Font("SansSerif", Font.BOLD, 10));
+            pill.setForeground(new Color(255, 255, 255, 200));
+            pill.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(255, 255, 255, 60), 1, true),
+                BorderFactory.createEmptyBorder(3, 10, 3, 10)));
+            pillRow.add(pill);
+        }
+        brand.add(pillRow);
+
+        brand.add(Box.createVerticalGlue());
+
+        // Footer
+        JLabel footer = new JLabel("League of Bilkent");
+        footer.setFont(new Font("SansSerif", Font.PLAIN, 11));
+        footer.setForeground(new Color(255, 255, 255, 80));
+        footer.setAlignmentX(LEFT_ALIGNMENT);
+        brand.add(footer);
+
+        return brand;
+    }
+
+    private JPanel buildFormPanel() {
+        JPanel right = new JPanel();
+        right.setBackground(Color.WHITE);
+        right.setLayout(new GridBagLayout());
+
+        JPanel wrapper = new JPanel();
+        wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.Y_AXIS));
+        wrapper.setBackground(Color.WHITE);
+        wrapper.setMaximumSize(new Dimension(340, 500));
+
+        // Welcome text
+        JLabel welcomeLbl = new JLabel("Welcome back");
+        welcomeLbl.setFont(new Font("SansSerif", Font.BOLD, 24));
+        welcomeLbl.setForeground(AppConstants.TEXT_PRI);
+        welcomeLbl.setAlignmentX(LEFT_ALIGNMENT);
+        wrapper.add(welcomeLbl);
+        wrapper.add(Box.createVerticalStrut(4));
+
+        JLabel subLbl = new JLabel("Sign in to your account or create a new one");
+        subLbl.setFont(AppConstants.F_SMALL);
+        subLbl.setForeground(AppConstants.TEXT_LIGHT);
+        subLbl.setAlignmentX(LEFT_ALIGNMENT);
+        wrapper.add(subLbl);
+        wrapper.add(Box.createVerticalStrut(28));
+
+        // Custom tab bar
+        JPanel tabBar = new JPanel(new GridLayout(1, 2, 0, 0));
+        tabBar.setBackground(AppConstants.BG_MAIN);
+        tabBar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+        tabBar.setAlignmentX(LEFT_ALIGNMENT);
+        tabBar.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(AppConstants.BORDER, 1, true),
+            BorderFactory.createEmptyBorder(3, 3, 3, 3)));
+
+        tabLogin = createTabButton("Sign In", true);
+        tabRegister = createTabButton("Create Account", false);
+
+        tabLogin.addActionListener(e -> switchTab(true));
+        tabRegister.addActionListener(e -> switchTab(false));
+
+        tabBar.add(tabLogin);
+        tabBar.add(tabRegister);
+        wrapper.add(tabBar);
+        wrapper.add(Box.createVerticalStrut(24));
+
+        // Form container with CardLayout
+        formCardLayout = new CardLayout();
+        formContainer = new JPanel(formCardLayout);
+        formContainer.setBackground(Color.WHITE);
+        formContainer.setAlignmentX(LEFT_ALIGNMENT);
+
+        formContainer.add(createLoginForm(), "login");
+        formContainer.add(new RegisterScreen(this), "register");
+
+        wrapper.add(formContainer);
+
+        right.add(wrapper);
+        return right;
+    }
+
+    private JButton createTabButton(String text, boolean active) {
+        JButton b = new JButton(text) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                if (getClientProperty("active") == Boolean.TRUE) {
+                    g2.setColor(Color.WHITE);
+                    g2.fill(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), 8, 8));
+                }
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        b.putClientProperty("active", active);
+        b.setFont(new Font("SansSerif", active ? Font.BOLD : Font.PLAIN, 13));
+        b.setForeground(active ? AppConstants.TEXT_PRI : AppConstants.TEXT_LIGHT);
+        b.setFocusPainted(false);
+        b.setBorderPainted(false);
+        b.setContentAreaFilled(false);
+        b.setOpaque(false);
+        b.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        return b;
+    }
+
+    private void switchTab(boolean isLogin) {
+        tabLogin.putClientProperty("active", isLogin);
+        tabLogin.setFont(new Font("SansSerif", isLogin ? Font.BOLD : Font.PLAIN, 13));
+        tabLogin.setForeground(isLogin ? AppConstants.TEXT_PRI : AppConstants.TEXT_LIGHT);
+        tabLogin.repaint();
+
+        tabRegister.putClientProperty("active", !isLogin);
+        tabRegister.setFont(new Font("SansSerif", !isLogin ? Font.BOLD : Font.PLAIN, 13));
+        tabRegister.setForeground(!isLogin ? AppConstants.TEXT_PRI : AppConstants.TEXT_LIGHT);
+        tabRegister.repaint();
+
+        formCardLayout.show(formContainer, isLogin ? "login" : "register");
+    }
+
+    private JPanel createLoginForm() {
         JPanel p = new JPanel();
         p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
         p.setBackground(Color.WHITE);
-        p.setBorder(BorderFactory.createEmptyBorder(16, 0, 8, 0));
 
-        p.add(UIHelper.createFieldLabel("Username"));
-        p.add(Box.createVerticalStrut(4));
-        loginUsername = UIHelper.createStyledField();
-        loginUsername.setAlignmentX(LEFT_ALIGNMENT);
-        loginUsername.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
+        // Username
+        JLabel userLbl = new JLabel("Username");
+        userLbl.setFont(new Font("SansSerif", Font.BOLD, 12));
+        userLbl.setForeground(AppConstants.TEXT_SEC);
+        userLbl.setAlignmentX(LEFT_ALIGNMENT);
+        p.add(userLbl);
+        p.add(Box.createVerticalStrut(6));
+        loginUsername = createRoundedField("Enter your username");
         p.add(loginUsername);
-        p.add(Box.createVerticalStrut(14));
+        p.add(Box.createVerticalStrut(16));
 
-        p.add(UIHelper.createFieldLabel("Password"));
-        p.add(Box.createVerticalStrut(4));
-        loginPassword = UIHelper.createStyledPasswordField();
-        loginPassword.setAlignmentX(LEFT_ALIGNMENT);
-        loginPassword.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
+        // Password
+        JLabel passLbl = new JLabel("Password");
+        passLbl.setFont(new Font("SansSerif", Font.BOLD, 12));
+        passLbl.setForeground(AppConstants.TEXT_SEC);
+        passLbl.setAlignmentX(LEFT_ALIGNMENT);
+        p.add(passLbl);
+        p.add(Box.createVerticalStrut(6));
+        loginPassword = createRoundedPasswordField("Enter your password");
         p.add(loginPassword);
-        p.add(Box.createVerticalStrut(20));
+        p.add(Box.createVerticalStrut(8));
 
-        JButton btnLogin = UIHelper.createButton("Log in \u2192", AppConstants.TEAL, Color.WHITE);
-        btnLogin.setAlignmentX(LEFT_ALIGNMENT);
-        btnLogin.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-        p.add(btnLogin);
-        p.add(Box.createVerticalStrut(10));
-
-        JButton btnForgot = new JButton("Forgot Password?");
-        btnForgot.setFont(AppConstants.F_SMALL);
+        // Forgot password - right aligned
+        JPanel forgotRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        forgotRow.setBackground(Color.WHITE);
+        forgotRow.setAlignmentX(LEFT_ALIGNMENT);
+        forgotRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 24));
+        JButton btnForgot = new JButton("Forgot password?");
+        btnForgot.setFont(new Font("SansSerif", Font.PLAIN, 12));
         btnForgot.setForeground(AppConstants.TEAL);
         btnForgot.setBorderPainted(false);
         btnForgot.setContentAreaFilled(false);
         btnForgot.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btnForgot.setAlignmentX(CENTER_ALIGNMENT);
-        p.add(btnForgot);
-
-        btnLogin.addActionListener(e -> handleLogin());
-        loginPassword.addActionListener(e -> handleLogin());
         btnForgot.addActionListener(e -> new ForgotPasswordDialog(this).setVisible(true));
+        forgotRow.add(btnForgot);
+        p.add(forgotRow);
+        p.add(Box.createVerticalStrut(20));
+
+        // Login button - full width gradient
+        JButton btnLogin = new JButton("Sign In") {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                Color c1 = AppConstants.TEAL;
+                Color c2 = AppConstants.TEAL_DARK;
+                if (getModel().isPressed()) { c1 = c1.darker(); c2 = c2.darker(); }
+                else if (getModel().isRollover()) { c1 = c1.brighter(); c2 = c2.brighter(); }
+                g2.setPaint(new GradientPaint(0, 0, c1, getWidth(), 0, c2));
+                g2.fill(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), 12, 12));
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        btnLogin.setFont(new Font("SansSerif", Font.BOLD, 14));
+        btnLogin.setForeground(Color.WHITE);
+        btnLogin.setFocusPainted(false);
+        btnLogin.setBorderPainted(false);
+        btnLogin.setContentAreaFilled(false);
+        btnLogin.setOpaque(false);
+        btnLogin.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnLogin.setAlignmentX(LEFT_ALIGNMENT);
+        btnLogin.setMaximumSize(new Dimension(Integer.MAX_VALUE, 44));
+        btnLogin.setPreferredSize(new Dimension(0, 44));
+        btnLogin.addActionListener(e -> handleLogin());
+        p.add(btnLogin);
+
+        loginPassword.addActionListener(e -> handleLogin());
+        loginUsername.addActionListener(e -> loginPassword.requestFocus());
+
+        p.add(Box.createVerticalStrut(24));
+
+        // Demo accounts hint
+        JPanel demoPanel = new JPanel();
+        demoPanel.setLayout(new BoxLayout(demoPanel, BoxLayout.Y_AXIS));
+        demoPanel.setBackground(new Color(0xF4, 0xF8, 0xFB));
+        demoPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(AppConstants.BORDER, 1, true),
+            BorderFactory.createEmptyBorder(10, 14, 10, 14)));
+        demoPanel.setAlignmentX(LEFT_ALIGNMENT);
+        demoPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
+
+        JLabel demoTitle = new JLabel("Demo accounts");
+        demoTitle.setFont(new Font("SansSerif", Font.BOLD, 11));
+        demoTitle.setForeground(AppConstants.TEXT_SEC);
+        demoPanel.add(demoTitle);
+
+        JLabel demoInfo = new JLabel("damla / eylul / emir_selim / ege / bosman  (password: 1234)");
+        demoInfo.setFont(new Font("SansSerif", Font.PLAIN, 11));
+        demoInfo.setForeground(AppConstants.TEXT_LIGHT);
+        demoPanel.add(demoInfo);
+
+        p.add(demoPanel);
 
         return p;
     }
 
+    private JTextField createRoundedField(String placeholder) {
+        JTextField f = new JTextField(20) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(getBackground());
+                g2.fill(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), 10, 10));
+                g2.dispose();
+                super.paintComponent(g);
+            }
+
+            @Override
+            protected void paintBorder(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(isFocusOwner() ? AppConstants.TEAL : AppConstants.BORDER);
+                g2.setStroke(new BasicStroke(isFocusOwner() ? 1.5f : 1f));
+                g2.draw(new RoundRectangle2D.Float(0.5f, 0.5f, getWidth() - 1, getHeight() - 1, 10, 10));
+                g2.dispose();
+            }
+        };
+        f.setFont(AppConstants.F_NORMAL);
+        f.setOpaque(false);
+        f.setBorder(BorderFactory.createEmptyBorder(10, 14, 10, 14));
+        f.setAlignmentX(LEFT_ALIGNMENT);
+        f.setMaximumSize(new Dimension(Integer.MAX_VALUE, 42));
+
+        // Placeholder
+        f.setForeground(AppConstants.TEXT_LIGHT);
+        f.setText(placeholder);
+        f.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent e) {
+                if (f.getText().equals(placeholder)) {
+                    f.setText("");
+                    f.setForeground(AppConstants.TEXT_PRI);
+                }
+                f.repaint();
+            }
+            public void focusLost(java.awt.event.FocusEvent e) {
+                if (f.getText().isEmpty()) {
+                    f.setText(placeholder);
+                    f.setForeground(AppConstants.TEXT_LIGHT);
+                }
+                f.repaint();
+            }
+        });
+        return f;
+    }
+
+    private JPasswordField createRoundedPasswordField(String placeholder) {
+        JPasswordField f = new JPasswordField(20) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(getBackground());
+                g2.fill(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), 10, 10));
+                g2.dispose();
+                super.paintComponent(g);
+            }
+
+            @Override
+            protected void paintBorder(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(isFocusOwner() ? AppConstants.TEAL : AppConstants.BORDER);
+                g2.setStroke(new BasicStroke(isFocusOwner() ? 1.5f : 1f));
+                g2.draw(new RoundRectangle2D.Float(0.5f, 0.5f, getWidth() - 1, getHeight() - 1, 10, 10));
+                g2.dispose();
+            }
+        };
+        f.setFont(AppConstants.F_NORMAL);
+        f.setOpaque(false);
+        f.setBorder(BorderFactory.createEmptyBorder(10, 14, 10, 14));
+        f.setAlignmentX(LEFT_ALIGNMENT);
+        f.setMaximumSize(new Dimension(Integer.MAX_VALUE, 42));
+        f.setEchoChar((char) 0);
+        f.setForeground(AppConstants.TEXT_LIGHT);
+        f.setText(placeholder);
+        f.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent e) {
+                if (String.valueOf(f.getPassword()).equals(placeholder)) {
+                    f.setText("");
+                    f.setEchoChar('\u2022');
+                    f.setForeground(AppConstants.TEXT_PRI);
+                }
+                f.repaint();
+            }
+            public void focusLost(java.awt.event.FocusEvent e) {
+                if (f.getPassword().length == 0) {
+                    f.setEchoChar((char) 0);
+                    f.setText(placeholder);
+                    f.setForeground(AppConstants.TEXT_LIGHT);
+                }
+                f.repaint();
+            }
+        });
+        return f;
+    }
+
     private void handleLogin() {
         String username = loginUsername.getText().trim().toLowerCase();
+        if (username.equals("enter your username")) username = "";
         String password = new String(loginPassword.getPassword());
+        if (password.equals("Enter your password")) password = "";
         if (username.isEmpty() || password.isEmpty()) { UIHelper.showError(this, AppConstants.ERR_USER_PASS); return; }
         refreshUsers();
         User found = null;

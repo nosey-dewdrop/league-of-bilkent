@@ -106,9 +106,11 @@ Use one of the demo accounts:
 
 | Username | Password | Role |
 |----------|----------|------|
-| damla | 1234 | Student (IEEE President) |
-| ali_k | 1234 | Student (Sports Enthusiast) |
-| elif_s | 1234 | Student (Art Lover) |
+| damla | 1234 | Student (CS & Event Organizer) |
+| eylul | 1234 | Student (Art & Photography) |
+| emir_selim | 1234 | Student (Sports Enthusiast) |
+| ege | 1234 | Student (Music & GameDev) |
+| bosman | 1234 | Student (Entrepreneur) |
 | ieee_bilkent | 1234 | Club (IEEE Bilkent) |
 | music_club | 1234 | Club (Music Club) |
 

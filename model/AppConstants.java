@@ -2,6 +2,8 @@ package model;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.io.FileInputStream;
+import java.util.Properties;
 
 /*
  * ┌──────────────────────────────────────────────────────────────────┐
@@ -28,7 +30,7 @@ import java.awt.Font;
  */
 public class AppConstants {
 
-    // ═══ DEWDROP PALETTE ═══
+    // ═══ PALETTE ═══
     public static final Color TEAL       = new Color(0x00, 0xB8, 0xC8);
     public static final Color TEAL_DARK  = new Color(0x00, 0x7D, 0x8C);
     public static final Color TEAL_LIGHT = new Color(0xCE, 0xF3, 0xF6);
@@ -68,8 +70,8 @@ public class AppConstants {
     // ═══ LAYOUT ═══
     public static final int WINDOW_WIDTH  = 1200;
     public static final int WINDOW_HEIGHT = 820;
-    public static final int LOGIN_WIDTH   = 440;
-    public static final int LOGIN_HEIGHT  = 580;
+    public static final int LOGIN_WIDTH   = 860;
+    public static final int LOGIN_HEIGHT  = 560;
     public static final int NAV_WIDTH     = 0; // no sidebar
     public static final int CARD_RADIUS   = 14;
     public static final int CARD_PADDING  = 20;
@@ -123,9 +125,18 @@ public class AppConstants {
     public static final int MAX_EVENT_XP          = 100;
 
     // ═══ DATABASE ═══
-    public static final String DB_URL  = "jdbc:mysql://localhost:3306/league_of_bilkent";
-    public static final String DB_USER = "root";
-    public static final String DB_PASS = "";
+    private static final Properties DB_PROPS = loadCredentials();
+    public static final String DB_URL  = DB_PROPS.getProperty("db.url", "jdbc:mysql://localhost:3306/league_of_bilkent");
+    public static final String DB_USER = DB_PROPS.getProperty("db.user", "root");
+    public static final String DB_PASS = DB_PROPS.getProperty("db.pass", "");
+
+    private static Properties loadCredentials() {
+        Properties p = new Properties();
+        try (FileInputStream f = new FileInputStream("credentials.properties")) {
+            p.load(f);
+        } catch (Exception ignored) {}
+        return p;
+    }
 
     // ═══ EMAIL ═══
     public static final String EMAIL_SENDER    = "noreply@bilkent.edu.tr";

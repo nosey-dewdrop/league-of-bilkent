@@ -31,7 +31,7 @@ public class PosterGenerator {
     private static final int WIDTH = 600, HEIGHT = 340;
     private static final Random rand = new Random();
 
-    // Dewdrop ocean/teal pastels
+    // Ocean/teal pastels
     private static final Color[] PASTELS = {
         new Color(0xCE, 0xF3, 0xF6), new Color(0xB8, 0xDF, 0xF5),
         new Color(0xD4, 0xEE, 0xD1), new Color(0xE3, 0xD5, 0xF0),

@@ -21,59 +21,82 @@ import java.util.ArrayList;
 public class SampleData {
 
     public static void loadSampleData() {
-        // Generate proper random salts
         String s1 = PasswordUtil.generateSalt();
         String s2 = PasswordUtil.generateSalt();
         String s3 = PasswordUtil.generateSalt();
         String s4 = PasswordUtil.generateSalt();
         String s5 = PasswordUtil.generateSalt();
+        String s6 = PasswordUtil.generateSalt();
+        String s7 = PasswordUtil.generateSalt();
 
         // Users
         User damla = new User("damla", "Damla", "damla@ug.bilkent.edu.tr",
-            PasswordUtil.hashPassword("1234", s1), s1, "IEEE President | CS Student");
+            PasswordUtil.hashPassword("1234", s1), s1, "CS Student | Event Organizer");
         damla.setVerified(true); damla.setXp(120);
         damla.getInterests().add("software"); damla.getInterests().add("ai");
         damla.getInterests().add("music"); damla.getInterests().add("philosophy");
 
-        User ali = new User("ali_k", "Ali K.", "ali@ug.bilkent.edu.tr",
-            PasswordUtil.hashPassword("1234", s2), s2, "Runner & Sports Enthusiast");
-        ali.setVerified(true); ali.setXp(80);
-        ali.getInterests().add("sports"); ali.getInterests().add("fitness");
+        User eylul = new User("eylul", "Eylül", "eylul@ug.bilkent.edu.tr",
+            PasswordUtil.hashPassword("1234", s2), s2, "Art & Photography Lover");
+        eylul.setVerified(true); eylul.setXp(80);
+        eylul.getInterests().add("art"); eylul.getInterests().add("photography");
+        eylul.getInterests().add("cinema");
 
-        User elif = new User("elif_s", "Elif S.", "elif@ug.bilkent.edu.tr",
-            PasswordUtil.hashPassword("1234", s3), s3, "Art & Photography Lover");
-        elif.setVerified(true); elif.setXp(45);
-        elif.getInterests().add("art"); elif.getInterests().add("photography");
+        User emir = new User("emir_selim", "Emir Selim", "emirselim@ug.bilkent.edu.tr",
+            PasswordUtil.hashPassword("1234", s3), s3, "Runner & Sports Enthusiast");
+        emir.setVerified(true); emir.setXp(95);
+        emir.getInterests().add("sports"); emir.getInterests().add("fitness");
+        emir.getInterests().add("basketball");
+
+        User ege = new User("ege", "Ege", "ege@ug.bilkent.edu.tr",
+            PasswordUtil.hashPassword("1234", s4), s4, "Music Producer & GameDev");
+        ege.setVerified(true); ege.setXp(60);
+        ege.getInterests().add("music"); ege.getInterests().add("gamedev");
+        ege.getInterests().add("software");
+
+        User bosman = new User("bosman", "Bosman", "bosman@ug.bilkent.edu.tr",
+            PasswordUtil.hashPassword("1234", s5), s5, "Entrepreneur & Finance Geek");
+        bosman.setVerified(true); bosman.setXp(45);
+        bosman.getInterests().add("entrepreneurship"); bosman.getInterests().add("finance");
+        bosman.getInterests().add("marketing");
 
         ClubUser ieee = new ClubUser("ieee_bilkent", "IEEE Bilkent", "ieee@bilkent.edu.tr",
-            PasswordUtil.hashPassword("1234", s4), s4, "IEEE Bilkent Student Branch");
+            PasswordUtil.hashPassword("1234", s6), s6, "IEEE Bilkent Student Branch");
         ieee.setVerified(true); ieee.setXp(200);
         ieee.getInterests().add("software"); ieee.getInterests().add("ai");
 
         ClubUser music = new ClubUser("music_club", "Music Club", "music@bilkent.edu.tr",
-            PasswordUtil.hashPassword("1234", s5), s5, "Bilkent Music & Performance Club");
+            PasswordUtil.hashPassword("1234", s7), s7, "Bilkent Music & Performance Club");
         music.setVerified(true); music.setXp(150);
         music.getInterests().add("music");
 
         Database.addToDatabase(damla);
-        Database.addToDatabase(ali);
-        Database.addToDatabase(elif);
+        Database.addToDatabase(eylul);
+        Database.addToDatabase(emir);
+        Database.addToDatabase(ege);
+        Database.addToDatabase(bosman);
         Database.addToDatabase(ieee);
         Database.addToDatabase(music);
 
-        // Set XP directly in DB
         Database.addXP("damla", 120);
-        Database.addXP("ali_k", 80);
-        Database.addXP("elif_s", 45);
+        Database.addXP("eylul", 80);
+        Database.addXP("emir_selim", 95);
+        Database.addXP("ege", 60);
+        Database.addXP("bosman", 45);
         Database.addXP("ieee_bilkent", 200);
         Database.addXP("music_club", 150);
 
         // Follows
         Database.addFollow("damla", "ieee_bilkent");
         Database.addFollow("damla", "music_club");
-        Database.addFollow("ali_k", "damla");
-        Database.addFollow("elif_s", "damla");
-        Database.addFollow("elif_s", "music_club");
+        Database.addFollow("eylul", "damla");
+        Database.addFollow("eylul", "music_club");
+        Database.addFollow("emir_selim", "damla");
+        Database.addFollow("emir_selim", "ege");
+        Database.addFollow("ege", "ieee_bilkent");
+        Database.addFollow("ege", "damla");
+        Database.addFollow("bosman", "ieee_bilkent");
+        Database.addFollow("bosman", "emir_selim");
 
         // Events
         LocalDateTime now = LocalDateTime.now();
@@ -103,42 +126,55 @@ public class SampleData {
         String p4 = PosterGenerator.generateDefault(e4); if(p4!=null) Database.updateEventImage(id4,p4);
 
         Event e5 = new Event(0, "Campus Run", "5km campus run - all fitness levels welcome!",
-            "Main Gate", now.plusDays(7), now.plusDays(7).plusHours(2), now.plusDays(6), 200, "ali_k");
+            "Main Gate", now.plusDays(7), now.plusDays(7).plusHours(2), now.plusDays(6), 200, "emir_selim");
         e5.addTag("sports"); e5.addTag("fitness"); e5.setXpReward(5);
         int id5 = Database.addToDatabase(e5);
         String p5 = PosterGenerator.generateDefault(e5); if(p5!=null) Database.updateEventImage(id5,p5);
 
         Event e6 = new Event(0, "Art Exhibition", "Student artwork showcase at the library.",
-            "Library Foyer", now.plusDays(40), now.plusDays(41), now.plusDays(39), 150, "elif_s");
+            "Library Foyer", now.plusDays(40), now.plusDays(41), now.plusDays(39), 150, "eylul");
         e6.addTag("art"); e6.addTag("exhibition"); e6.setXpReward(5);
         int id6 = Database.addToDatabase(e6);
         String p6 = PosterGenerator.generateDefault(e6); if(p6!=null) Database.updateEventImage(id6,p6);
 
         // Attendance
         Database.setAttendance(id1, "damla", AttendanceStatus.GOING);
-        Database.setAttendance(id1, "ali_k", AttendanceStatus.INTERESTED);
+        Database.setAttendance(id1, "ege", AttendanceStatus.GOING);
+        Database.setAttendance(id1, "emir_selim", AttendanceStatus.INTERESTED);
         Database.setAttendance(id2, "damla", AttendanceStatus.GOING);
+        Database.setAttendance(id2, "bosman", AttendanceStatus.INTERESTED);
+        Database.setAttendance(id3, "eylul", AttendanceStatus.GOING);
+        Database.setAttendance(id3, "ege", AttendanceStatus.GOING);
         Database.setAttendance(id3, "damla", AttendanceStatus.GOING);
-        Database.setAttendance(id3, "elif_s", AttendanceStatus.GOING);
-        Database.setAttendance(id4, "ali_k", AttendanceStatus.GOING);
-        Database.setAttendance(id4, "elif_s", AttendanceStatus.GOING);
-        Database.setAttendance(id4, "damla", AttendanceStatus.GOING);
+        Database.setAttendance(id4, "emir_selim", AttendanceStatus.GOING);
+        Database.setAttendance(id4, "eylul", AttendanceStatus.GOING);
+        Database.setAttendance(id4, "ege", AttendanceStatus.GOING);
+        Database.setAttendance(id5, "damla", AttendanceStatus.GOING);
+        Database.setAttendance(id5, "bosman", AttendanceStatus.MAYBE);
+        Database.setAttendance(id6, "damla", AttendanceStatus.INTERESTED);
+        Database.setAttendance(id6, "ege", AttendanceStatus.GOING);
 
         // Comments
-        Comment c1 = new Comment(0, "ali_k", "Sounds awesome! Will there be prizes?", "14/02 10:30", 0);
+        Comment c1 = new Comment(0, "emir_selim", "Sounds awesome! Will there be prizes?", "14/02 10:30", 0);
         int cid1 = Database.addToDatabase(c1, id1);
         Comment c2 = new Comment(0, "damla", "Yes! Top 3 get awards.", "14/02 11:00", cid1);
         Database.addToDatabase(c2, id1);
-        Comment c3 = new Comment(0, "elif_s", "Can't wait for this!", "14/02 12:00", 0);
+        Comment c3 = new Comment(0, "eylul", "Can't wait for this!", "14/02 12:00", 0);
         Database.addToDatabase(c3, id3);
+        Comment c4 = new Comment(0, "bosman", "Is this beginner friendly?", "14/02 14:00", 0);
+        Database.addToDatabase(c4, id4);
 
         // Messages
-        Database.sendMessage("ali_k", "damla", "Hey! Are you coming to the campus run?");
-        Database.sendMessage("damla", "ali_k", "Definitely! What time should we meet?");
+        Database.sendMessage("emir_selim", "damla", "Hey! Are you coming to the campus run?");
+        Database.sendMessage("damla", "emir_selim", "Definitely! What time should we meet?");
+        Database.sendMessage("ege", "eylul", "Are you performing at acoustic night?");
+        Database.sendMessage("eylul", "ege", "Yes! Playing two songs :)");
 
         // Notifications
-        Database.addNotification("damla", "ali_k started following you!");
-        Database.addNotification("damla", "elif_s started following you!");
+        Database.addNotification("damla", "eylul started following you!");
+        Database.addNotification("damla", "emir_selim started following you!");
+        Database.addNotification("ege", "emir_selim started following you!");
+        Database.addNotification("emir_selim", "bosman started following you!");
 
         System.out.println("Sample data loaded!");
     }
