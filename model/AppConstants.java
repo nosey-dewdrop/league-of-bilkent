@@ -70,7 +70,7 @@ public class AppConstants {
     // ═══ LAYOUT ═══
     public static final int WINDOW_WIDTH  = 1200;
     public static final int WINDOW_HEIGHT = 820;
-    public static final int LOGIN_WIDTH   = 860;
+    public static final int LOGIN_WIDTH   = 460;
     public static final int LOGIN_HEIGHT  = 560;
     public static final int NAV_WIDTH     = 0; // no sidebar
     public static final int CARD_RADIUS   = 14;

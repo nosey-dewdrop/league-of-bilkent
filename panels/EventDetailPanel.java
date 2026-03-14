@@ -169,27 +169,32 @@ public class EventDetailPanel extends JPanel {
 
         JButton btnGo = createStatusBtn(AppConstants.BTN_GOING, AppConstants.COLOR_GOING, current == AttendanceStatus.GOING);
         btnGo.addActionListener(e -> {
-            if (deadlinePassed) { UIHelper.showError(this, AppConstants.ERR_DEADLINE_PASSED); return; }
-            if (!event.canJoin(Database.getUserXP(me))) { UIHelper.showError(this, "You need " + event.getMinTierName() + " tier!"); return; }
-            homeScreen.changeAttendance(event, AttendanceStatus.GOING);
+            if (current == AttendanceStatus.GOING) {
+                homeScreen.changeAttendance(event, null);
+            } else {
+                if (deadlinePassed) { UIHelper.showError(this, AppConstants.ERR_DEADLINE_PASSED); return; }
+                if (!event.canJoin(Database.getUserXP(me))) { UIHelper.showError(this, "You need " + event.getMinTierName() + " tier!"); return; }
+                homeScreen.changeAttendance(event, AttendanceStatus.GOING);
+            }
             homeScreen.showEventDetail(event);
         });
 
         JButton btnInt = createStatusBtn(AppConstants.BTN_INTERESTED, AppConstants.COLOR_INTERESTED, current == AttendanceStatus.INTERESTED);
-        btnInt.addActionListener(e -> { homeScreen.changeAttendance(event, AttendanceStatus.INTERESTED); homeScreen.showEventDetail(event); });
+        btnInt.addActionListener(e -> {
+            homeScreen.changeAttendance(event, current == AttendanceStatus.INTERESTED ? null : AttendanceStatus.INTERESTED);
+            homeScreen.showEventDetail(event);
+        });
 
         JButton btnMay = createStatusBtn(AppConstants.BTN_MAYBE, AppConstants.COLOR_MAYBE, current == AttendanceStatus.MAYBE);
-        btnMay.addActionListener(e -> { homeScreen.changeAttendance(event, AttendanceStatus.MAYBE); homeScreen.showEventDetail(event); });
+        btnMay.addActionListener(e -> {
+            homeScreen.changeAttendance(event, current == AttendanceStatus.MAYBE ? null : AttendanceStatus.MAYBE);
+            homeScreen.showEventDetail(event);
+        });
 
         btnRow.add(btnGo);
         btnRow.add(btnInt);
         btnRow.add(btnMay);
 
-        if (current != null) {
-            JButton btnCancel = UIHelper.createOutlineButton(AppConstants.BTN_CANCEL, AppConstants.DANGER);
-            btnCancel.addActionListener(e -> { homeScreen.changeAttendance(event, null); homeScreen.showEventDetail(event); });
-            btnRow.add(btnCancel);
-        }
         section.add(btnRow);
         return section;
     }

@@ -56,58 +56,34 @@ public class HomeScreen extends JFrame {
         setLayout(new BorderLayout());
         getContentPane().setBackground(AppConstants.BG_MAIN);
 
-        add(buildTopNav(), BorderLayout.NORTH);
+        add(buildTopBar(), BorderLayout.NORTH);
+        add(buildSideNav(), BorderLayout.WEST);
         add(buildContent(), BorderLayout.CENTER);
         cardLayout.show(contentPanel, "feed");
     }
 
-    private JPanel buildTopNav() {
-        JPanel nav = new JPanel(new BorderLayout(0, 0));
-        nav.setBackground(Color.WHITE);
-        nav.setBorder(BorderFactory.createCompoundBorder(
+    private JPanel buildTopBar() {
+        JPanel bar = new JPanel();
+        bar.setLayout(new BoxLayout(bar, BoxLayout.X_AXIS));
+        bar.setBackground(Color.WHITE);
+        bar.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createMatteBorder(0, 0, 1, 0, AppConstants.BORDER),
-            BorderFactory.createEmptyBorder(0, 24, 0, 24)));
-        nav.setPreferredSize(new Dimension(0, 54));
+            BorderFactory.createEmptyBorder(8, 20, 8, 20)));
+        bar.setPreferredSize(new Dimension(0, 48));
 
-        // Left: brand
-        JPanel left = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 12));
-        left.setOpaque(false);
-        JLabel dropIcon = new JLabel("\uD83D\uDCA7");
-        dropIcon.setFont(new Font("SansSerif", Font.PLAIN, 22));
-        left.add(dropIcon);
+        // Brand
         JLabel brand = new JLabel("League of Bilkent");
-        brand.setFont(new Font("SansSerif", Font.BOLD, 16));
+        brand.setFont(new Font("SansSerif", Font.BOLD, 15));
         brand.setForeground(AppConstants.TEXT_PRI);
-        left.add(brand);
-        nav.add(left, BorderLayout.WEST);
+        brand.setMaximumSize(brand.getPreferredSize());
+        bar.add(brand);
 
-        // Center: navigation links
-        JPanel links = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
-        links.setOpaque(false);
-        String[] tabs = {"Feed", "Discover", "Calendar", "Messages", "Leaderboard"};
-        String[] actions = {"feed", "discover", "calendar", "messages", "leaderboard"};
-        for (int i = 0; i < tabs.length; i++) {
-            JButton btn = createNavLink(tabs[i], i == 0);
-            final String action = actions[i];
-            btn.addActionListener(e -> {
-                switch (action) {
-                    case "feed": showFeed(); break;
-                    case "discover": showPanel(new DiscoverPanel(this), "discover"); break;
-                    case "calendar": showPanel(new CalendarPanel(this), "calendar"); break;
-                    case "messages": showPanel(new MessagingPanel(this), "messages"); break;
-                    case "leaderboard": showPanel(new LeaderboardPanel(this), "leaderboard"); break;
-                }
-            });
-            links.add(btn);
-        }
-        nav.add(links, BorderLayout.CENTER);
+        bar.add(Box.createHorizontalGlue());
 
-        // Right: search + create + notif + avatar + logout
-        JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 8));
-        right.setOpaque(false);
-
+        // Search
         JTextField searchField = UIHelper.createPlaceholderField("Search...");
-        searchField.setPreferredSize(new Dimension(160, 34));
+        searchField.setPreferredSize(new Dimension(160, 32));
+        searchField.setMaximumSize(new Dimension(160, 32));
         searchField.addActionListener(e -> {
             String q = UIHelper.getFieldText(searchField, "Search...");
             if (!q.isEmpty()) {
@@ -116,46 +92,86 @@ public class HomeScreen extends JFrame {
                 showPanel(sp, "search");
             }
         });
-        right.add(searchField);
+        bar.add(searchField);
+        bar.add(Box.createHorizontalStrut(8));
 
-        JButton btnNotif = makeIconBtn("\uD83D\uDD14");
-        btnNotif.addActionListener(e -> showPanel(new NotificationsPanel(this), "notif"));
-        right.add(btnNotif);
-
-        JButton btnCreate = new JButton("\u2728 Create");
+        // Create
+        JButton btnCreate = new JButton("+ Create");
         btnCreate.setFont(new Font("SansSerif", Font.BOLD, 12));
         btnCreate.setForeground(Color.WHITE);
         btnCreate.setBackground(AppConstants.TEAL);
-        btnCreate.setBorder(BorderFactory.createEmptyBorder(7, 16, 7, 16));
+        btnCreate.setBorder(BorderFactory.createEmptyBorder(6, 14, 6, 14));
         btnCreate.setFocusPainted(false);
         btnCreate.setOpaque(true);
         btnCreate.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnCreate.setMaximumSize(new Dimension(100, 32));
         btnCreate.addActionListener(e -> showPanel(new CreateEventPanel(this), "create"));
-        right.add(btnCreate);
+        bar.add(btnCreate);
+        bar.add(Box.createHorizontalStrut(8));
 
-        // Avatar
-        String initials = MainFile.currentUser.getDisplayName().substring(0, Math.min(2, MainFile.currentUser.getDisplayName().length())).toUpperCase();
-        JButton avatar = new JButton(initials);
-        avatar.setFont(new Font("SansSerif", Font.BOLD, 11));
-        avatar.setForeground(Color.WHITE);
-        avatar.setBackground(AppConstants.TEAL_DARK);
-        avatar.setBorder(BorderFactory.createEmptyBorder(6, 8, 6, 8));
-        avatar.setFocusPainted(false);
-        avatar.setOpaque(true);
-        avatar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        avatar.addActionListener(e -> showMyProfile());
-        right.add(avatar);
+        // Profile
+        String displayName = MainFile.currentUser.getDisplayName();
+        JButton btnProfile = new JButton(displayName);
+        btnProfile.setFont(new Font("SansSerif", Font.BOLD, 12));
+        btnProfile.setForeground(AppConstants.TEXT_PRI);
+        btnProfile.setBorderPainted(false);
+        btnProfile.setContentAreaFilled(false);
+        btnProfile.setFocusPainted(false);
+        btnProfile.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnProfile.setMaximumSize(btnProfile.getPreferredSize());
+        btnProfile.addActionListener(e -> showMyProfile());
+        bar.add(btnProfile);
+        bar.add(Box.createHorizontalStrut(8));
 
-        JButton btnLogout = makeIconBtn("\uD83D\uDEAA");
+        // Logout
+        JButton btnLogout = new JButton("Log out");
+        btnLogout.setFont(new Font("SansSerif", Font.PLAIN, 11));
         btnLogout.setForeground(AppConstants.DANGER);
+        btnLogout.setBorderPainted(false);
+        btnLogout.setContentAreaFilled(false);
+        btnLogout.setFocusPainted(false);
+        btnLogout.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnLogout.setMaximumSize(btnLogout.getPreferredSize());
         btnLogout.addActionListener(e -> {
             dispose();
             MainFile.currentUser = null;
             MainFile.loginScreen.setVisible(true);
         });
-        right.add(btnLogout);
+        bar.add(btnLogout);
 
-        nav.add(right, BorderLayout.EAST);
+        return bar;
+    }
+
+    private JPanel buildSideNav() {
+        JPanel nav = new JPanel();
+        nav.setLayout(new BoxLayout(nav, BoxLayout.Y_AXIS));
+        nav.setBackground(Color.WHITE);
+        nav.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createMatteBorder(0, 0, 0, 1, AppConstants.BORDER),
+            BorderFactory.createEmptyBorder(16, 14, 16, 14)));
+        nav.setPreferredSize(new Dimension(180, 0));
+
+        String[] tabs = {"Feed", "Discover", "Calendar", "Messages", "Leaderboard", "Notifications"};
+        String[] actions = {"feed", "discover", "calendar", "messages", "leaderboard", "notif"};
+        for (int i = 0; i < tabs.length; i++) {
+            JButton btn = createNavLink(tabs[i], i == 0);
+            btn.setHorizontalAlignment(SwingConstants.LEFT);
+            btn.setAlignmentX(LEFT_ALIGNMENT);
+            btn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 34));
+            final String action = actions[i];
+            btn.addActionListener(e -> {
+                switch (action) {
+                    case "feed": showFeed(); break;
+                    case "discover": showPanel(new DiscoverPanel(this), "discover"); break;
+                    case "calendar": showPanel(new CalendarPanel(this), "calendar"); break;
+                    case "messages": showPanel(new MessagingPanel(this), "messages"); break;
+                    case "leaderboard": showPanel(new LeaderboardPanel(this), "leaderboard"); break;
+                    case "notif": showPanel(new NotificationsPanel(this), "notif"); break;
+                }
+            });
+            nav.add(btn);
+        }
+
         return nav;
     }
 
@@ -266,13 +282,14 @@ public class HomeScreen extends JFrame {
 
     private JButton createNavLink(String text, boolean active) {
         JButton b = new JButton(text);
-        b.setFont(new Font("SansSerif", active ? Font.BOLD : Font.PLAIN, 13));
+        b.setFont(new Font("SansSerif", active ? Font.BOLD : Font.PLAIN, 12));
         b.setForeground(active ? AppConstants.TEAL : AppConstants.TEXT_SEC);
         b.setBackground(Color.WHITE);
         b.setBorderPainted(false);
         b.setFocusPainted(false);
         b.setContentAreaFilled(false);
         b.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        b.setMaximumSize(new Dimension(b.getPreferredSize().width, 38));
         b.setBorder(BorderFactory.createEmptyBorder(16, 14, 16, 14));
         if (active) b.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createMatteBorder(0, 0, 2, 0, AppConstants.TEAL),

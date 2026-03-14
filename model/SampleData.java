@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * │                  <<class>> SampleData                        │
  * ├──────────────────────────────────────────────────────────────┤
  * │ + loadSampleData() (static) -> populates DB with demo data  │
- * │   Creates: 5 users (3 students + 2 clubs), 6 events,        │
+ * │   Creates: 7 users (5 students + 2 clubs), 18 events,       │
  * │            follows, attendance, comments, messages, notifs   │
  * ├──────────────────────────────────────────────────────────────┤
  * │ USES:    User, ClubUser, Event, Comment, Database,           │
@@ -137,6 +137,78 @@ public class SampleData {
         int id6 = Database.addToDatabase(e6);
         String p6 = PosterGenerator.generateDefault(e6); if(p6!=null) Database.updateEventImage(id6,p6);
 
+        Event e7 = new Event(0, "Startup Pitch Night", "Present your startup idea and get feedback from mentors.",
+            "CYBERPARK Auditorium", now.plusDays(3), now.plusDays(3).plusHours(3), now.plusDays(2), 60, "bosman");
+        e7.addTag("entrepreneurship"); e7.addTag("finance"); e7.setXpReward(12);
+        int id7 = Database.addToDatabase(e7);
+        String p7 = PosterGenerator.generateDefault(e7); if(p7!=null) Database.updateEventImage(id7,p7);
+
+        Event e8 = new Event(0, "Photography Walk", "Golden hour campus photography walk. Bring your camera!",
+            "Bilkent Lake", now.plusDays(2), now.plusDays(2).plusHours(2), now.plusDays(1), 30, "eylul");
+        e8.addTag("photography"); e8.addTag("art"); e8.setXpReward(5);
+        int id8 = Database.addToDatabase(e8);
+        String p8 = PosterGenerator.generateDefault(e8); if(p8!=null) Database.updateEventImage(id8,p8);
+
+        Event e9 = new Event(0, "Basketball Tournament", "3v3 basketball tournament. Form your team!",
+            "Sports Center", now.plusDays(10), now.plusDays(10).plusHours(5), now.plusDays(9), 48, "emir_selim");
+        e9.addTag("basketball"); e9.addTag("sports"); e9.setXpReward(8);
+        int id9 = Database.addToDatabase(e9);
+        String p9 = PosterGenerator.generateDefault(e9); if(p9!=null) Database.updateEventImage(id9,p9);
+
+        Event e10 = new Event(0, "AI Reading Group", "Weekly paper discussion - this week: transformers.",
+            "EA-325", now.plusDays(1), now.plusDays(1).plusHours(2), now.plusDays(0), 25, "damla");
+        e10.addTag("ai"); e10.addTag("software"); e10.setXpReward(7);
+        int id10 = Database.addToDatabase(e10);
+        String p10 = PosterGenerator.generateDefault(e10); if(p10!=null) Database.updateEventImage(id10,p10);
+
+        Event e11 = new Event(0, "Open Mic Night", "Sing, rap, do stand-up - the stage is yours!",
+            "Odeon", now.plusDays(14), now.plusDays(14).plusHours(3), now.plusDays(13), 80, "music_club");
+        e11.addTag("music"); e11.addTag("art"); e11.setXpReward(5);
+        int id11 = Database.addToDatabase(e11);
+        String p11 = PosterGenerator.generateDefault(e11); if(p11!=null) Database.updateEventImage(id11,p11);
+
+        Event e12 = new Event(0, "Cybersecurity CTF", "Capture the flag competition for beginners and pros.",
+            "EA-409", now.plusDays(12), now.plusDays(12).plusHours(6), now.plusDays(11), 50, "ieee_bilkent");
+        e12.addTag("cybersecurity"); e12.addTag("software"); e12.setXpReward(20); e12.setMinTierIndex(2);
+        int id12 = Database.addToDatabase(e12);
+        String p12 = PosterGenerator.generateDefault(e12); if(p12!=null) Database.updateEventImage(id12,p12);
+
+        Event e13 = new Event(0, "Film Screening: Interstellar", "Movie night with popcorn and discussion after.",
+            "FEASS Auditorium", now.plusDays(6), now.plusDays(6).plusHours(3), now.plusDays(5), 120, "eylul");
+        e13.addTag("cinema"); e13.addTag("art"); e13.setXpReward(3);
+        int id13 = Database.addToDatabase(e13);
+        String p13 = PosterGenerator.generateDefault(e13); if(p13!=null) Database.updateEventImage(id13,p13);
+
+        Event e14 = new Event(0, "Yoga at Sunrise", "Morning yoga session on the east campus lawn.",
+            "East Campus Lawn", now.plusDays(4), now.plusDays(4).plusHours(1), now.plusDays(3), 40, "emir_selim");
+        e14.addTag("fitness"); e14.addTag("sports"); e14.setXpReward(4);
+        int id14 = Database.addToDatabase(e14);
+        String p14 = PosterGenerator.generateDefault(e14); if(p14!=null) Database.updateEventImage(id14,p14);
+
+        Event e15 = new Event(0, "Beat Making Workshop", "Learn FL Studio basics and produce your first beat.",
+            "Music Room B-102", now.plusDays(9), now.plusDays(9).plusHours(3), now.plusDays(8), 20, "ege");
+        e15.addTag("music"); e15.addTag("software"); e15.setXpReward(8);
+        int id15 = Database.addToDatabase(e15);
+        String p15 = PosterGenerator.generateDefault(e15); if(p15!=null) Database.updateEventImage(id15,p15);
+
+        Event e16 = new Event(0, "Philosophy Cafe", "This week's topic: Ethics of AI. Open discussion format.",
+            "Starbucks Bilkent", now.plusDays(8), now.plusDays(8).plusHours(2), now.plusDays(7), 30, "damla");
+        e16.addTag("philosophy"); e16.addTag("ai"); e16.setXpReward(5);
+        int id16 = Database.addToDatabase(e16);
+        String p16 = PosterGenerator.generateDefault(e16); if(p16!=null) Database.updateEventImage(id16,p16);
+
+        Event e17 = new Event(0, "Marketing 101", "Guest speaker from Google on digital marketing strategies.",
+            "FEASS B-201", now.plusDays(15), now.plusDays(15).plusHours(2), now.plusDays(14), 70, "bosman");
+        e17.addTag("marketing"); e17.addTag("entrepreneurship"); e17.setXpReward(6);
+        int id17 = Database.addToDatabase(e17);
+        String p17 = PosterGenerator.generateDefault(e17); if(p17!=null) Database.updateEventImage(id17,p17);
+
+        Event e18 = new Event(0, "Robotics Demo Day", "See student-built robots in action and vote for the best!",
+            "Engineering Building Lobby", now.plusDays(20), now.plusDays(20).plusHours(4), now.plusDays(19), 100, "ieee_bilkent");
+        e18.addTag("robotics"); e18.addTag("software"); e18.setXpReward(10);
+        int id18 = Database.addToDatabase(e18);
+        String p18 = PosterGenerator.generateDefault(e18); if(p18!=null) Database.updateEventImage(id18,p18);
+
         // Attendance
         Database.setAttendance(id1, "damla", AttendanceStatus.GOING);
         Database.setAttendance(id1, "ege", AttendanceStatus.GOING);
@@ -153,6 +225,39 @@ public class SampleData {
         Database.setAttendance(id5, "bosman", AttendanceStatus.MAYBE);
         Database.setAttendance(id6, "damla", AttendanceStatus.INTERESTED);
         Database.setAttendance(id6, "ege", AttendanceStatus.GOING);
+        Database.setAttendance(id7, "damla", AttendanceStatus.GOING);
+        Database.setAttendance(id7, "ege", AttendanceStatus.INTERESTED);
+        Database.setAttendance(id7, "emir_selim", AttendanceStatus.MAYBE);
+        Database.setAttendance(id8, "damla", AttendanceStatus.GOING);
+        Database.setAttendance(id8, "ege", AttendanceStatus.GOING);
+        Database.setAttendance(id9, "bosman", AttendanceStatus.GOING);
+        Database.setAttendance(id9, "ege", AttendanceStatus.GOING);
+        Database.setAttendance(id9, "damla", AttendanceStatus.INTERESTED);
+        Database.setAttendance(id10, "eylul", AttendanceStatus.INTERESTED);
+        Database.setAttendance(id10, "ege", AttendanceStatus.GOING);
+        Database.setAttendance(id10, "bosman", AttendanceStatus.MAYBE);
+        Database.setAttendance(id11, "damla", AttendanceStatus.GOING);
+        Database.setAttendance(id11, "eylul", AttendanceStatus.GOING);
+        Database.setAttendance(id11, "emir_selim", AttendanceStatus.INTERESTED);
+        Database.setAttendance(id12, "damla", AttendanceStatus.GOING);
+        Database.setAttendance(id12, "ege", AttendanceStatus.GOING);
+        Database.setAttendance(id13, "damla", AttendanceStatus.GOING);
+        Database.setAttendance(id13, "emir_selim", AttendanceStatus.GOING);
+        Database.setAttendance(id13, "bosman", AttendanceStatus.GOING);
+        Database.setAttendance(id13, "ege", AttendanceStatus.MAYBE);
+        Database.setAttendance(id14, "eylul", AttendanceStatus.GOING);
+        Database.setAttendance(id14, "damla", AttendanceStatus.GOING);
+        Database.setAttendance(id15, "damla", AttendanceStatus.INTERESTED);
+        Database.setAttendance(id15, "eylul", AttendanceStatus.GOING);
+        Database.setAttendance(id16, "eylul", AttendanceStatus.GOING);
+        Database.setAttendance(id16, "ege", AttendanceStatus.GOING);
+        Database.setAttendance(id16, "bosman", AttendanceStatus.INTERESTED);
+        Database.setAttendance(id17, "damla", AttendanceStatus.INTERESTED);
+        Database.setAttendance(id17, "emir_selim", AttendanceStatus.MAYBE);
+        Database.setAttendance(id18, "damla", AttendanceStatus.GOING);
+        Database.setAttendance(id18, "ege", AttendanceStatus.GOING);
+        Database.setAttendance(id18, "eylul", AttendanceStatus.INTERESTED);
+        Database.setAttendance(id18, "bosman", AttendanceStatus.GOING);
 
         // Comments
         Comment c1 = new Comment(0, "emir_selim", "Sounds awesome! Will there be prizes?", "14/02 10:30", 0);
@@ -163,6 +268,22 @@ public class SampleData {
         Database.addToDatabase(c3, id3);
         Comment c4 = new Comment(0, "bosman", "Is this beginner friendly?", "14/02 14:00", 0);
         Database.addToDatabase(c4, id4);
+        Comment c5 = new Comment(0, "ege", "I'm bringing my drone for aerial shots!", "15/02 09:00", 0);
+        Database.addToDatabase(c5, id8);
+        Comment c6 = new Comment(0, "damla", "Who needs a team for basketball?", "15/02 10:00", 0);
+        Database.addToDatabase(c6, id9);
+        Comment c7 = new Comment(0, "emir_selim", "I'll form a team, DM me!", "15/02 10:30", 0);
+        Database.addToDatabase(c7, id9);
+        Comment c8 = new Comment(0, "bosman", "This pitch night is going to be fire", "15/02 11:00", 0);
+        Database.addToDatabase(c8, id7);
+        Comment c9 = new Comment(0, "eylul", "Can I do a poetry reading at open mic?", "15/02 14:00", 0);
+        Database.addToDatabase(c9, id11);
+        Comment c10 = new Comment(0, "ege", "Of course! All art forms welcome", "15/02 14:30", 0);
+        Database.addToDatabase(c10, id11);
+        Comment c11 = new Comment(0, "damla", "The transformer paper is a must-read", "16/02 09:00", 0);
+        Database.addToDatabase(c11, id10);
+        Comment c12 = new Comment(0, "emir_selim", "Interstellar is my favorite movie!", "16/02 12:00", 0);
+        Database.addToDatabase(c12, id13);
 
         // Messages
         Database.sendMessage("emir_selim", "damla", "Hey! Are you coming to the campus run?");

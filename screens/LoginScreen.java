@@ -56,7 +56,6 @@ public class LoginScreen extends JFrame {
         JPanel main = new JPanel(new BorderLayout());
         main.setBackground(Color.WHITE);
 
-        main.add(buildBrandPanel(), BorderLayout.WEST);
         main.add(buildFormPanel(), BorderLayout.CENTER);
 
         setContentPane(main);
@@ -108,7 +107,7 @@ public class LoginScreen extends JFrame {
                 g2.setColor(Color.WHITE);
                 g2.setFont(new Font("SansSerif", Font.PLAIN, 34));
                 FontMetrics fm = g2.getFontMetrics();
-                String icon = "\uD83C\uDFC6";
+                String icon = "LoB";
                 g2.drawString(icon, 36 - fm.stringWidth(icon) / 2, 36 + fm.getAscent() / 3);
                 g2.dispose();
             }
@@ -159,7 +158,7 @@ public class LoginScreen extends JFrame {
         brand.add(Box.createVerticalGlue());
 
         // Footer
-        JLabel footer = new JLabel("League of Bilkent");
+        JLabel footer = new JLabel("built by team manifest");
         footer.setFont(new Font("SansSerif", Font.PLAIN, 11));
         footer.setForeground(new Color(255, 255, 255, 80));
         footer.setAlignmentX(LEFT_ALIGNMENT);
@@ -343,28 +342,6 @@ public class LoginScreen extends JFrame {
         loginUsername.addActionListener(e -> loginPassword.requestFocus());
 
         p.add(Box.createVerticalStrut(24));
-
-        // Demo accounts hint
-        JPanel demoPanel = new JPanel();
-        demoPanel.setLayout(new BoxLayout(demoPanel, BoxLayout.Y_AXIS));
-        demoPanel.setBackground(new Color(0xF4, 0xF8, 0xFB));
-        demoPanel.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(AppConstants.BORDER, 1, true),
-            BorderFactory.createEmptyBorder(10, 14, 10, 14)));
-        demoPanel.setAlignmentX(LEFT_ALIGNMENT);
-        demoPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
-
-        JLabel demoTitle = new JLabel("Demo accounts");
-        demoTitle.setFont(new Font("SansSerif", Font.BOLD, 11));
-        demoTitle.setForeground(AppConstants.TEXT_SEC);
-        demoPanel.add(demoTitle);
-
-        JLabel demoInfo = new JLabel("damla / eylul / emir_selim / ege / bosman  (password: 1234)");
-        demoInfo.setFont(new Font("SansSerif", Font.PLAIN, 11));
-        demoInfo.setForeground(AppConstants.TEXT_LIGHT);
-        demoPanel.add(demoInfo);
-
-        p.add(demoPanel);
 
         return p;
     }
