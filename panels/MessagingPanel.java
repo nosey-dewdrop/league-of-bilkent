@@ -8,6 +8,26 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
+/*
+ * ┌──────────────────────────────────────────────────────────────┐
+ * │                <<class>> MessagingPanel                      │
+ * │                   extends JPanel                             │
+ * │        Direct messaging with conversation list + chat       │
+ * ├──────────────────────────────────────────────────────────────┤
+ * │ - home: HomeScreen                                           │
+ * │ - chatPanel, msgField, selectedUser, convList                │
+ * ├──────────────────────────────────────────────────────────────┤
+ * │ - buildUI() -> split layout: conv list (left) + chat (right)│
+ * │ - refreshConversations() -> reloads conversation list       │
+ * │ - loadChat() -> loads messages with selected user           │
+ * │ - sendMessage() -> sends message and refreshes chat         │
+ * │ - newConversation() -> prompts for username to message      │
+ * ├──────────────────────────────────────────────────────────────┤
+ * │ USES:    HomeScreen, Database, MainFile, UIHelper,           │
+ * │          AppConstants, User                                  │
+ * │ USED BY: HomeScreen (messages nav link)                     │
+ * └──────────────────────────────────────────────────────────────┘
+ */
 public class MessagingPanel extends JPanel {
 
     private HomeScreen home;

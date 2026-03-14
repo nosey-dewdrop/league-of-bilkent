@@ -1,6 +1,7 @@
 package panels;
 
 import model.*;
+import model.Event;
 import screens.*;
 import tools.*;
 
@@ -15,6 +16,31 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
+/*
+ * ┌──────────────────────────────────────────────────────────────────┐
+ * │                    <<class>> FeedPanel                          │
+ * │                     extends JPanel                             │
+ * │          Main event feed with poster cards + filtering         │
+ * ├──────────────────────────────────────────────────────────────────┤
+ * │ - home: HomeScreen -> navigation reference                     │
+ * │ - gridPanel: JPanel -> event card grid container               │
+ * │ - currentFilter, currentSort -> active filter/sort state       │
+ * ├──────────────────────────────────────────────────────────────────┤
+ * │ + FeedPanel(home) -> builds hero, XP strip, pills, grid        │
+ * │ + refreshGrid() -> reloads and re-renders event cards          │
+ * │ - createCard(event) -> poster card with image/emoji + info     │
+ * │ - createRecRow(event, interests) -> "For You" recommendation   │
+ * │ - createSectionHeader(num, title, sub) -> numbered section     │
+ * │ - createPill(text, active) -> filter pill button               │
+ * │ - sortEvents(events) -> sorts by date/location/xp/popularity  │
+ * │ - getFilteredEvents() -> applies tag filter to all events      │
+ * │ - loadImage(path) -> loads poster image from file              │
+ * ├──────────────────────────────────────────────────────────────────┤
+ * │ USES:    HomeScreen, Database, MainFile, UIHelper, AppConstants,│
+ * │          PosterGenerator (color/emoji), Event, AttendanceStatus │
+ * │ USED BY: HomeScreen (feed card in CardLayout)                  │
+ * └──────────────────────────────────────────────────────────────────┘
+ */
 public class FeedPanel extends JPanel {
 
     private HomeScreen home;

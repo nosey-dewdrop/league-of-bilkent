@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(for f:*)"
+      "Bash(for f:*)",
+      "Bash(javac -cp \".:lib/*\" model/*.java tools/*.java panels/*.java screens/*.java 2>&1)"
     ]
   }
 }

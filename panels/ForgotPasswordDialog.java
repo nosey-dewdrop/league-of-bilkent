@@ -7,9 +7,26 @@ import tools.*;
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * Sifre sifirlama dialog'u.
- * Email girer -> dogrulama kodu gonderilir -> yeni sifre girilir.
+/*
+ * ┌──────────────────────────────────────────────────────────────┐
+ * │             <<class>> ForgotPasswordDialog                  │
+ * │                   extends JDialog                            │
+ * │    Multi-step password reset: email -> code -> new password │
+ * ├──────────────────────────────────────────────────────────────┤
+ * │ - emailField, codeField, newPasswordField, confirmField     │
+ * │ - verificationCode, targetEmail, targetUsername              │
+ * │ - btnSendCode, btnReset, codePanel (initially hidden)       │
+ * ├──────────────────────────────────────────────────────────────┤
+ * │ + ForgotPasswordDialog(parent) -> builds 2-step form        │
+ * │ - createHeader() -> dark header bar                         │
+ * │ - createForm() -> email input + hidden code/password form   │
+ * │ - handleSendCode() -> validates email, sends reset code     │
+ * │ - handleReset() -> verifies code, hashes new password       │
+ * │ - findUsernameByEmail(email) -> DB lookup helper            │
+ * ├──────────────────────────────────────────────────────────────┤
+ * │ USES:    Database, UIHelper, PasswordUtil, EmailSender, User│
+ * │ USED BY: LoginScreen (forgot password button)               │
+ * └──────────────────────────────────────────────────────────────┘
  */
 public class ForgotPasswordDialog extends JDialog {
 

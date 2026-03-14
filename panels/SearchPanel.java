@@ -1,6 +1,7 @@
 package panels;
 
 import model.*;
+import model.Event;
 import screens.*;
 import tools.*;
 
@@ -8,6 +9,24 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
+/*
+ * ┌──────────────────────────────────────────────────────────────┐
+ * │                 <<class>> SearchPanel                        │
+ * │                   extends JPanel                             │
+ * │     Search events and users with tag chip shortcuts          │
+ * ├──────────────────────────────────────────────────────────────┤
+ * │ - home: HomeScreen                                           │
+ * │ - searchField: JTextField, resultsPanel: JPanel              │
+ * ├──────────────────────────────────────────────────────────────┤
+ * │ + searchFor(query) -> called from top nav search bar        │
+ * │ - buildUI() -> search field + tag chips + results area      │
+ * │ - performSearch() -> searches events + users via Searchable │
+ * ├──────────────────────────────────────────────────────────────┤
+ * │ USES:    HomeScreen, Database, UIHelper, AppConstants,       │
+ * │          Event, User (via Searchable interface)              │
+ * │ USED BY: HomeScreen (search field + search nav)             │
+ * └──────────────────────────────────────────────────────────────┘
+ */
 public class SearchPanel extends JPanel {
 
     private HomeScreen home;

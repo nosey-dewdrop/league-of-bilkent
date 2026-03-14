@@ -1,6 +1,7 @@
 package panels;
 
 import model.*;
+import model.Event;
 import screens.*;
 import tools.*;
 
@@ -8,6 +9,29 @@ import javax.swing.*;
 import java.awt.*;
 import java.time.LocalDateTime;
 
+/*
+ * ┌──────────────────────────────────────────────────────────────────┐
+ * │                <<class>> CreateEventPanel                      │
+ * │                    extends JPanel                              │
+ * │          Event creation form with all fields                   │
+ * ├──────────────────────────────────────────────────────────────────┤
+ * │ - titleField, locationField, tagsField, descArea               │
+ * │ - date/time spinners (start, end, deadline)                    │
+ * │ - capacitySpin, xpSpin, tierCombo                              │
+ * │ - selectedImagePath -> poster image path                       │
+ * ├──────────────────────────────────────────────────────────────────┤
+ * │ - buildUI() -> full form with all input sections               │
+ * │ - createDateRow(now, withTime) -> date spinner row             │
+ * │ - chooseImage() -> file chooser for poster                     │
+ * │ - handleCreate() -> validates, creates Event, notifies,        │
+ * │   auto-generates poster if none selected                       │
+ * │ - createFieldLabel(text) -> form label                         │
+ * ├──────────────────────────────────────────────────────────────────┤
+ * │ USES:    HomeScreen, Database, MainFile, UIHelper, AppConstants,│
+ * │          Event, PosterGenerator                                │
+ * │ USED BY: HomeScreen (create button)                            │
+ * └──────────────────────────────────────────────────────────────────┘
+ */
 public class CreateEventPanel extends JPanel {
 
     private HomeScreen home;

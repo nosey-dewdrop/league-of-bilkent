@@ -1,6 +1,7 @@
 package panels;
 
 import model.*;
+import model.Event;
 import screens.*;
 import tools.*;
 
@@ -10,6 +11,23 @@ import java.time.*;
 import java.time.format.TextStyle;
 import java.util.*;
 
+/*
+ * ┌──────────────────────────────────────────────────────────────┐
+ * │                <<class>> CalendarPanel                       │
+ * │                   extends JPanel                             │
+ * │          Monthly calendar view with event indicators         │
+ * ├──────────────────────────────────────────────────────────────┤
+ * │ - home: HomeScreen                                           │
+ * │ - currentMonth: YearMonth -> displayed month                 │
+ * │ - calGrid: JPanel, monthLabel: JLabel                       │
+ * ├──────────────────────────────────────────────────────────────┤
+ * │ - buildUI() -> month nav + 7-column day grid                │
+ * │ - refreshCal() -> reloads events, rebuilds grid cells       │
+ * ├──────────────────────────────────────────────────────────────┤
+ * │ USES:    HomeScreen, Database, AppConstants, Event           │
+ * │ USED BY: HomeScreen (calendar nav link)                     │
+ * └──────────────────────────────────────────────────────────────┘
+ */
 public class CalendarPanel extends JPanel {
 
     private HomeScreen home;

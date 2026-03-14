@@ -1,6 +1,7 @@
 package panels;
 
 import model.*;
+import model.Event;
 import screens.*;
 import tools.*;
 
@@ -8,6 +9,22 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
+/*
+ * ┌──────────────────────────────────────────────────────────────┐
+ * │                <<class>> DiscoverPanel                       │
+ * │                   extends JPanel                             │
+ * │      Trending events + personalized recommendations         │
+ * ├──────────────────────────────────────────────────────────────┤
+ * │ - home: HomeScreen                                           │
+ * ├──────────────────────────────────────────────────────────────┤
+ * │ - buildUI() -> trending section + "For You" section         │
+ * │ - createEventRow(event) -> event row with view button       │
+ * ├──────────────────────────────────────────────────────────────┤
+ * │ USES:    HomeScreen, Database, MainFile, UIHelper,           │
+ * │          AppConstants, Event                                 │
+ * │ USED BY: HomeScreen (discover nav link)                     │
+ * └──────────────────────────────────────────────────────────────┘
+ */
 public class DiscoverPanel extends JPanel {
 
     private HomeScreen home;

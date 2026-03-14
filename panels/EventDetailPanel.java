@@ -1,6 +1,7 @@
 package panels;
 
 import model.*;
+import model.Event;
 import screens.*;
 import tools.*;
 
@@ -9,6 +10,30 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
+/*
+ * ┌──────────────────────────────────────────────────────────────────┐
+ * │                <<class>> EventDetailPanel                      │
+ * │                    extends JPanel                              │
+ * │          Full event details with attendance + comments         │
+ * ├──────────────────────────────────────────────────────────────────┤
+ * │ - event: Event -> event being displayed                        │
+ * │ - homeScreen: HomeScreen -> navigation reference               │
+ * ├──────────────────────────────────────────────────────────────────┤
+ * │ + EventDetailPanel(event, homeScreen)                          │
+ * │ - createBody() -> scrollable detail view                       │
+ * │ - createProp(label, value) -> key-value property row           │
+ * │ - buildAttendanceSection() -> Going/Interested/Maybe buttons   │
+ * │ - buildAttendeesSection() -> attendee list with clickable names│
+ * │ - buildCommentsSection() -> threaded comments with reply       │
+ * │ - createCommentRow(comment, indent) -> single comment          │
+ * │ - createCommentInput(parentId) -> text field + send button     │
+ * │ - createStatusBtn(text, color, selected) -> RSVP button        │
+ * ├──────────────────────────────────────────────────────────────────┤
+ * │ USES:    HomeScreen, Database, MainFile, UIHelper, AppConstants,│
+ * │          Event, Comment, AttendanceStatus, User                 │
+ * │ USED BY: HomeScreen.showEventDetail                            │
+ * └──────────────────────────────────────────────────────────────────┘
+ */
 public class EventDetailPanel extends JPanel {
 
     private Event event;

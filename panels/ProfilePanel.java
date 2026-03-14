@@ -1,6 +1,7 @@
 package panels;
 
 import model.*;
+import model.Event;
 import screens.*;
 import tools.*;
 
@@ -8,6 +9,27 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
+/*
+ * ┌──────────────────────────────────────────────────────────────────┐
+ * │                   <<class>> ProfilePanel                       │
+ * │                     extends JPanel                             │
+ * │          User profile view (own or other user)                 │
+ * ├──────────────────────────────────────────────────────────────────┤
+ * │ - user: User -> profile being displayed                        │
+ * │ - home: HomeScreen -> navigation reference                     │
+ * │ - isOtherUser: boolean -> viewing own vs other profile         │
+ * ├──────────────────────────────────────────────────────────────────┤
+ * │ + ProfilePanel(user, home, isOtherUser) -> builds full profile │
+ * │ - buildUI() -> header (name/tier/xp), bio, interests,          │
+ * │   followers/following lists, user's events                     │
+ * │ - showFollowDialog(followers, following) -> modal dialog with   │
+ * │   search, tab switching between followers/following             │
+ * ├──────────────────────────────────────────────────────────────────┤
+ * │ USES:    HomeScreen, Database, MainFile, UIHelper, AppConstants,│
+ * │          User, Event, InterestSelectionDialog                   │
+ * │ USED BY: HomeScreen.showMyProfile / navigateToProfile           │
+ * └──────────────────────────────────────────────────────────────────┘
+ */
 public class ProfilePanel extends JPanel {
 
     private User user;

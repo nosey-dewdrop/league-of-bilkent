@@ -10,6 +10,40 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.RoundRectangle2D;
 
+/*
+ * ┌──────────────────────────────────────────────────────────────────┐
+ * │                    <<class>> UIHelper                           │
+ * │           Centralized UI component factory (all static)        │
+ * ├──────────────────────────────────────────────────────────────────┤
+ * │ BUTTONS:                                                        │
+ * │  + createButton(text, bg, fg) -> rounded filled button          │
+ * │  + createOutlineButton(text, color) -> bordered button          │
+ * │  + createTagButton(text, color, selected) -> filter chip        │
+ * │                                                                  │
+ * │ LABELS:                                                          │
+ * │  + createLabel / createSmallLabel / createSectionLabel           │
+ * │  + createPageTitle / createSubtitle / createFieldLabel           │
+ * │  + createBadgeLabel(text, bg, fg) -> rounded badge              │
+ * │  + createClickableUsername(user, home) -> navigable link         │
+ * │                                                                  │
+ * │ INPUTS:                                                          │
+ * │  + createStyledField / createStyledPasswordField                 │
+ * │  + createPlaceholderField(placeholder) -> with focus behavior   │
+ * │  + getFieldText(field, placeholder) -> extracts real text       │
+ * │                                                                  │
+ * │ LAYOUT:                                                          │
+ * │  + createCard() -> white panel with soft shadow border           │
+ * │  + createPagePanel() -> standard page wrapper                   │
+ * │  + createAvatar(letter, color, size) -> circular avatar         │
+ * │  + createSeparator / createFullWidthGBC / wrapInScroll          │
+ * │                                                                  │
+ * │ DIALOGS:                                                         │
+ * │  + showError / showSuccess / showConfirm                         │
+ * ├──────────────────────────────────────────────────────────────────┤
+ * │ INNER:  SoftShadowBorder (custom AbstractBorder)                │
+ * │ USED BY: Every panel and screen in the application              │
+ * └──────────────────────────────────────────────────────────────────┘
+ */
 public class UIHelper {
 
     public static JButton createButton(String text, Color bg, Color fg) {
