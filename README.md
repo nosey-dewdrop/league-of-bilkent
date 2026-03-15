@@ -53,8 +53,11 @@ leagueofbilkent-mvp/
 
 ## Team
 
-- **Damla** — AppConstants, User, ClubUser, AttendanceStatus, InterestSelectionDialog, LeaderboardPanel
-- **Eylul** — FeedPanel, ForgotPasswordDialog, NotificationsPanel, ProfilePanel, SearchPanel, HomeScreen
+- Damla
+- Eylul
+- Emir Selim
+- Ege
+- Osman
 
 ## License
 
