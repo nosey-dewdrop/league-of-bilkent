@@ -9,460 +9,60 @@
 body{font-family:'JetBrains Mono',monospace;background:#fff;color:#000;padding:24px;font-size:11px;line-height:1.4}
 h1{font-size:16px;font-weight:700;text-align:center;margin-bottom:4px;text-transform:uppercase;letter-spacing:2px}
 .sub{text-align:center;font-size:10px;color:#666;margin-bottom:32px}
-.pkg{margin-bottom:32px}
-.pkg-title{font-size:13px;font-weight:700;border-bottom:2px solid #000;padding-bottom:4px;margin-bottom:16px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
-.card{border:2px solid #000}
-.card-head{background:#000;color:#fff;padding:5px 8px;font-weight:700;font-size:12px;display:flex;justify-content:space-between;align-items:center}
-.card-head .st{font-weight:400;font-size:10px}
-.card-head .ext{font-weight:400;font-size:10px;color:#aaa}
-.attrs,.methods{padding:4px 8px}
-.attrs{border-bottom:1px solid #000}
-.line{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sep2{height:0;border-top:2px solid #000}
-.rel-box{border:2px solid #000;padding:12px;margin-top:32px}
+
+/* RELATIONSHIPS */
+.rel-box{border:2px solid #000;padding:12px;margin-bottom:32px}
 .rel-box h2{font-size:13px;font-weight:700;margin-bottom:8px;text-transform:uppercase}
 .rel-line{line-height:1.8}
+
+/* PACKAGE TOGGLE */
+.pkg{margin-bottom:24px;border:2px solid #000}
+.pkg-title{font-size:13px;font-weight:700;padding:8px 12px;background:#000;color:#fff;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none}
+.pkg-title:hover{background:#222}
+.pkg-title .arrow{transition:transform .2s}
+.pkg-title .arrow.closed{transform:rotate(-90deg)}
+.pkg-title .count{font-weight:400;font-size:10px;opacity:.7}
+.pkg-body{padding:12px}
+.pkg-body.hidden{display:none}
+
+/* CARD GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px}
+
+/* CLASS CARD */
+.card{border:2px solid #000;overflow:hidden}
+.card-head{background:#333;color:#fff;padding:6px 10px;font-weight:700;font-size:12px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none}
+.card-head:hover{background:#444}
+.card-head .ext{font-weight:400;font-size:10px;color:#aaa}
+.card-head .toggle{font-size:14px;transition:transform .2s}
+.card-head .toggle.closed{transform:rotate(0deg)}
+.card-body{display:block}
+.card-body.hidden{display:none}
+
+/* FIELDS & METHODS */
+.section-bar{padding:4px 10px;background:#eee;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #000;user-select:none}
+.section-bar:hover{background:#ddd}
+.section-content{padding:4px 10px}
+.section-content.hidden{display:none}
+.line{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:2px 0;cursor:pointer;border-radius:2px;padding-left:4px;margin:1px 0}
+.line:hover{background:#f0f0f0}
+.line.active{background:#f0f0f0}
+
+/* TOOLTIP */
+.tip{display:none;margin:2px 0 4px 0;padding:0 0 0 20px;font-size:10px;line-height:1.6;color:#555}
+.tip.show{display:block}
+.tip .tip-line{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tip .tip-line::before{content:'> ';color:#999}
+.tip .tip-uses-line::before{content:'> ';color:#999}
+.tip .tip-uses-line{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tip .tip-uses-line span{color:#000;font-weight:700}
+
+.sep2{height:0;border-top:2px solid #000}
 @media print{body{padding:8px;font-size:10px}.grid{grid-template-columns:1fr 1fr}.card{break-inside:avoid}}
 </style>
 </head>
 <body>
 <h1>League of Bilkent</h1>
-<p class="sub">UML Class Diagram</p>
-
-<!-- MODEL -->
-<div class="pkg">
-<div class="pkg-title">model</div>
-<div class="grid">
-
-<div class="card">
-<div class="card-head">&laquo;interface&raquo; Searchable</div>
-<div class="sep2"></div>
-<div class="methods">
-<div class="line">+ matchesSearch(query: String): boolean</div>
-<div class="line">+ getSearchSummary(): String</div>
-</div>
-</div>
-
-<div class="card">
-<div class="card-head">&laquo;enum&raquo; AttendanceStatus</div>
-<div class="attrs">
-<div class="line">GOING, INTERESTED, MAYBE</div>
-<div class="line">- displayName: String</div>
-</div>
-<div class="methods">
-<div class="line">+ getDisplayName(): String</div>
-<div class="line">+ fromString(s: String): AttendanceStatus</div>
-</div>
-</div>
-
-<div class="card">
-<div class="card-head">User <span class="ext">implements Searchable</span></div>
-<div class="attrs">
-<div class="line">- username: String</div>
-<div class="line">- displayName: String</div>
-<div class="line">- email: String</div>
-<div class="line">- password: String</div>
-<div class="line">- salt: String</div>
-<div class="line">- bio: String</div>
-<div class="line">- verified: boolean</div>
-<div class="line">- interests: ArrayList&lt;String&gt;</div>
-<div class="line">- following: ArrayList&lt;String&gt;</div>
-<div class="line">- followers: ArrayList&lt;String&gt;</div>
-<div class="line">- notifications: ArrayList&lt;String&gt;</div>
-<div class="line">- attending: ArrayList&lt;Integer&gt;</div>
-<div class="line">- xp: int</div>
-</div>
-<div class="methods">
-<div class="line">+ User(username, displayName, email, password, salt, bio)</div>
-<div class="line">+ User(username, displayName, email, plainPassword, bio)</div>
-<div class="line">+ User(username, password)</div>
-<div class="line">+ getUsername(): String</div>
-<div class="line">+ getDisplayName(): String</div>
-<div class="line">+ getEmail(): String</div>
-<div class="line">+ getPassword(): String</div>
-<div class="line">+ getSalt(): String</div>
-<div class="line">+ getBio(): String</div>
-<div class="line">+ isVerified(): boolean</div>
-<div class="line">+ getInterests(): ArrayList&lt;String&gt;</div>
-<div class="line">+ getFollowing(): ArrayList&lt;String&gt;</div>
-<div class="line">+ getFollowers(): ArrayList&lt;String&gt;</div>
-<div class="line">+ getAttending(): ArrayList&lt;Integer&gt;</div>
-<div class="line">+ getNotifications(): ArrayList&lt;String&gt;</div>
-<div class="line">+ getXp(): int</div>
-<div class="line">+ isClub(): boolean</div>
-<div class="line">+ getProfileBadge(): String</div>
-<div class="line">+ setUsername(username: String): void</div>
-<div class="line">+ setDisplayName(displayName: String): void</div>
-<div class="line">+ setEmail(email: String): void</div>
-<div class="line">+ setPassword(password: String): void</div>
-<div class="line">+ setSalt(salt: String): void</div>
-<div class="line">+ setBio(bio: String): void</div>
-<div class="line">+ setVerified(verified: boolean): void</div>
-<div class="line">+ setInterests(interests: ArrayList&lt;String&gt;): void</div>
-<div class="line">+ setFollowing(following: ArrayList&lt;String&gt;): void</div>
-<div class="line">+ setFollowers(followers: ArrayList&lt;String&gt;): void</div>
-<div class="line">+ setAttending(attending: ArrayList&lt;Integer&gt;): void</div>
-<div class="line">+ setNotifications(notifications: ArrayList&lt;String&gt;): void</div>
-<div class="line">+ setXp(xp: int): void</div>
-<div class="line">+ addInterest(interest: String): void</div>
-<div class="line">+ removeInterest(interest: String): void</div>
-<div class="line">+ addFollowing(username: String): void</div>
-<div class="line">+ removeFollowing(username: String): void</div>
-<div class="line">+ addFollower(username: String): void</div>
-<div class="line">+ removeFollower(username: String): void</div>
-<div class="line">+ addAttending(eventId: int): void</div>
-<div class="line">+ removeAttending(eventId: int): void</div>
-<div class="line">+ addNotification(message: String): void</div>
-<div class="line">+ isFollowing(username: String): boolean</div>
-<div class="line">+ checkPassword(plainPassword: String): boolean</div>
-<div class="line">+ matchesSearch(query: String): boolean</div>
-<div class="line">+ getSearchSummary(): String</div>
-<div class="line">+ toString(): String</div>
-</div>
-</div>
-
-<div class="card">
-<div class="card-head">ClubUser <span class="ext">extends User</span></div>
-<div class="sep2"></div>
-<div class="methods">
-<div class="line">+ ClubUser(username, displayName, email, password, salt, bio)</div>
-<div class="line">+ ClubUser(username, displayName, email, plainPassword, bio)</div>
-<div class="line">+ isClub(): boolean</div>
-<div class="line">+ getProfileBadge(): String</div>
-<div class="line">+ toString(): String</div>
-</div>
-</div>
-
-<div class="card">
-<div class="card-head">Event <span class="ext">implements Searchable</span></div>
-<div class="attrs">
-<div class="line">- id: int</div>
-<div class="line">- capacity: int</div>
-<div class="line">- xpReward: int</div>
-<div class="line">- minTierIndex: int</div>
-<div class="line">- title: String</div>
-<div class="line">- description: String</div>
-<div class="line">- location: String</div>
-<div class="line">- creatorUsername: String</div>
-<div class="line">- imagePath: String</div>
-<div class="line">- dateTime: LocalDateTime</div>
-<div class="line">- endDateTime: LocalDateTime</div>
-<div class="line">- registrationDeadline: LocalDateTime</div>
-<div class="line">- tags: ArrayList&lt;String&gt;</div>
-<div class="line">- comments: ArrayList&lt;Comment&gt;</div>
-<div class="line">- attendanceMap: HashMap&lt;String, AttendanceStatus&gt;</div>
-<div class="line">- FMT: DateTimeFormatter</div>
-</div>
-<div class="methods">
-<div class="line">+ Event(id, title, desc, location, dateTime, endDateTime, deadline, capacity, creator)</div>
-<div class="line">+ Event(id, title, desc, location, dateTime, capacity, creator)</div>
-<div class="line">+ getId(): int</div>
-<div class="line">+ getTitle(): String</div>
-<div class="line">+ getDescription(): String</div>
-<div class="line">+ getLocation(): String</div>
-<div class="line">+ getDateTime(): LocalDateTime</div>
-<div class="line">+ getEndDateTime(): LocalDateTime</div>
-<div class="line">+ getRegistrationDeadline(): LocalDateTime</div>
-<div class="line">+ getCapacity(): int</div>
-<div class="line">+ getCreatorUsername(): String</div>
-<div class="line">+ getTags(): ArrayList&lt;String&gt;</div>
-<div class="line">+ getComments(): ArrayList&lt;Comment&gt;</div>
-<div class="line">+ getAttendanceMap(): HashMap&lt;String, AttendanceStatus&gt;</div>
-<div class="line">+ getImagePath(): String</div>
-<div class="line">+ getXpReward(): int</div>
-<div class="line">+ getMinTierIndex(): int</div>
-<div class="line">+ getDateStr(): String</div>
-<div class="line">+ getEndDateStr(): String</div>
-<div class="line">+ getDeadlineStr(): String</div>
-<div class="line">+ getMinTierName(): String</div>
-<div class="line">+ getAttendees(): ArrayList&lt;String&gt;</div>
-<div class="line">+ getAttendeesByStatus(status: AttendanceStatus): ArrayList&lt;String&gt;</div>
-<div class="line">+ getGoingCount(): int</div>
-<div class="line">+ getInterestedCount(): int</div>
-<div class="line">+ getMaybeCount(): int</div>
-<div class="line">+ getAttendeeCount(): int</div>
-<div class="line">+ isFull(): boolean</div>
-<div class="line">+ isDeadlinePassed(): boolean</div>
-<div class="line">+ isEventPast(): boolean</div>
-<div class="line">+ canJoin(userXP: int): boolean</div>
-<div class="line">+ setId(id: int): void</div>
-<div class="line">+ setTitle(title: String): void</div>
-<div class="line">+ setDescription(description: String): void</div>
-<div class="line">+ setEndDateTime(endDateTime: LocalDateTime): void</div>
-<div class="line">+ setRegistrationDeadline(deadline: LocalDateTime): void</div>
-<div class="line">+ setTags(tags: ArrayList&lt;String&gt;): void</div>
-<div class="line">+ setComments(comments: ArrayList&lt;Comment&gt;): void</div>
-<div class="line">+ setAttendanceMap(map: HashMap&lt;String, AttendanceStatus&gt;): void</div>
-<div class="line">+ setImagePath(path: String): void</div>
-<div class="line">+ setXpReward(xp: int): void</div>
-<div class="line">+ setMinTierIndex(idx: int): void</div>
-<div class="line">+ setAttendees(attendees: ArrayList&lt;String&gt;): void</div>
-<div class="line">+ addTag(tag: String): void</div>
-<div class="line">+ setAttendance(u: String, s: AttendanceStatus): void</div>
-<div class="line">+ removeAttendance(u: String): void</div>
-<div class="line">+ getAttendanceStatus(u: String): AttendanceStatus</div>
-<div class="line">+ isAttending(u: String): boolean</div>
-<div class="line">+ addAttendee(u: String): void</div>
-<div class="line">+ removeAttendee(u: String): void</div>
-<div class="line">+ addComment(c: Comment): void</div>
-<div class="line">+ matchesSearch(query: String): boolean</div>
-<div class="line">+ getSearchSummary(): String</div>
-<div class="line">+ toString(): String</div>
-</div>
-</div>
-
-<div class="card">
-<div class="card-head">Comment</div>
-<div class="attrs">
-<div class="line">- id: int</div>
-<div class="line">- parentId: int</div>
-<div class="line">- username: String</div>
-<div class="line">- text: String</div>
-<div class="line">- time: String</div>
-</div>
-<div class="methods">
-<div class="line">+ Comment(username, text)</div>
-<div class="line">+ Comment(username, text, time)</div>
-<div class="line">+ Comment(id, username, text, time, parentId)</div>
-<div class="line">+ getId(): int</div>
-<div class="line">+ getUsername(): String</div>
-<div class="line">+ getText(): String</div>
-<div class="line">+ getTime(): String</div>
-<div class="line">+ getParentId(): int</div>
-<div class="line">+ setId(id: int): void</div>
-<div class="line">+ setParentId(parentId: int): void</div>
-<div class="line">+ isReply(): boolean</div>
-<div class="line">+ toString(): String</div>
-</div>
-</div>
-
-<div class="card">
-<div class="card-head">Database</div>
-<div class="attrs">
-<div class="line">+ databaseConnection: Connection {static}</div>
-</div>
-<div class="methods">
-<div class="line">+ createConnection(): void {static}</div>
-<div class="line">- createTables(): void {static}</div>
-<div class="line">- migrateAttendeesTable(stmt: Statement): void {static}</div>
-<div class="line">- addColumnIfNotExists(stmt, table, col, def): void {static}</div>
-<div class="line">+ addToDatabase(user: User): void {static}</div>
-<div class="line">+ addToDatabase(event: Event): int {static}</div>
-<div class="line">+ addToDatabase(comment: Comment, eventId: int): int {static}</div>
-<div class="line">+ deleteFromDatabase(user: User): void {static}</div>
-<div class="line">+ deleteFromDatabase(event: Event): void {static}</div>
-<div class="line">- exec(sql: String, params: Object...): void {static}</div>
-<div class="line">+ setAttendance(eventId, username, status): void {static}</div>
-<div class="line">+ removeAttendance(eventId, username): void {static}</div>
-<div class="line">+ getAttendanceMap(eventId): HashMap {static}</div>
-<div class="line">+ addAttendee(eid, u): void {static}</div>
-<div class="line">+ deleteAttendee(eid, u): void {static}</div>
-<div class="line">+ getAttendees(eid): ArrayList&lt;String&gt; {static}</div>
-<div class="line">+ addFollow(follower, following): void {static}</div>
-<div class="line">+ deleteFollow(follower, following): void {static}</div>
-<div class="line">+ getFollowers(u): ArrayList&lt;String&gt; {static}</div>
-<div class="line">+ getFollowing(u): ArrayList&lt;String&gt; {static}</div>
-<div class="line">+ addEventTag(eid, tag): void {static}</div>
-<div class="line">+ getEventTags(eid): ArrayList&lt;String&gt; {static}</div>
-<div class="line">+ addInterest(u, i): void {static}</div>
-<div class="line">+ removeInterest(u, i): void {static}</div>
-<div class="line">+ getInterests(u): ArrayList&lt;String&gt; {static}</div>
-<div class="line">+ setInterests(u, list): void {static}</div>
-<div class="line">+ addNotification(u, msg): void {static}</div>
-<div class="line">+ getNotifications(u): ArrayList&lt;String&gt; {static}</div>
-<div class="line">+ sendMessage(sender, receiver, text): void {static}</div>
-<div class="line">+ getMessages(user1, user2): ArrayList&lt;String[]&gt; {static}</div>
-<div class="line">+ getConversationPartners(username): ArrayList&lt;String&gt; {static}</div>
-<div class="line">+ getAllUsers(): ArrayList&lt;User&gt; {static}</div>
-<div class="line">+ getUserWithUsername(username): User {static}</div>
-<div class="line">- buildUser(rs: ResultSet): User {static}</div>
-<div class="line">+ updateUserVerified(u, v): void {static}</div>
-<div class="line">+ updateUserPassword(u, hash, salt): void {static}</div>
-<div class="line">+ updateUserBio(u, bio): void {static}</div>
-<div class="line">+ getAllEvents(): ArrayList&lt;Event&gt; {static}</div>
-<div class="line">- buildEvent(rs: ResultSet): Event {static}</div>
-<div class="line">- parseOptDT(s: String): LocalDateTime {static}</div>
-<div class="line">+ getComments(eid): ArrayList&lt;Comment&gt; {static}</div>
-<div class="line">+ getPopularEventIds(limit): ArrayList&lt;Integer&gt; {static}</div>
-<div class="line">+ getRecommendedEventIds(username, limit): ArrayList&lt;Integer&gt; {static}</div>
-<div class="line">+ getLeaderboard(limit): ArrayList&lt;User&gt; {static}</div>
-<div class="line">+ getUserXP(u): int {static}</div>
-<div class="line">+ addXP(u, amount): void {static}</div>
-<div class="line">+ isEmailTaken(email): boolean {static}</div>
-<div class="line">+ updateEventImage(eventId, path): void {static}</div>
-<div class="line">+ isDatabaseEmpty(): boolean {static}</div>
-<div class="line">- qList(sql, col, param): ArrayList&lt;String&gt; {static}</div>
-</div>
-</div>
-
-<div class="card">
-<div class="card-head">AppConstants</div>
-<div class="attrs">
-<div class="line">+ TEAL, TEAL_DARK, TEAL_LIGHT, ... : Color {static final}</div>
-<div class="line">+ F_HERO, F_BIG, F_TITLE, ... : Font {static final}</div>
-<div class="line">+ WINDOW_WIDTH, WINDOW_HEIGHT, ... : int {static final}</div>
-<div class="line">+ TIER_NAMES, INTEREST_CATEGORIES: String[] {static final}</div>
-<div class="line">+ TIER_THRESHOLDS: int[] {static final}</div>
-<div class="line">+ TIER_COLORS: Color[] {static final}</div>
-<div class="line">+ DB_URL, DB_USER, DB_PASS, ... : String {static final}</div>
-<div class="line">- DB_PROPS: Properties {static final}</div>
-</div>
-<div class="methods">
-<div class="line">- loadCredentials(): Properties {static}</div>
-<div class="line">+ getTierIndex(xp: int): int {static}</div>
-<div class="line">+ getTierName(xp: int): String {static}</div>
-<div class="line">+ getTierColor(xp: int): Color {static}</div>
-<div class="line">+ getNextTierXP(xp: int): int {static}</div>
-<div class="line">+ getNextTierName(xp: int): String {static}</div>
-</div>
-</div>
-
-<div class="card">
-<div class="card-head">SampleData</div>
-<div class="sep2"></div>
-<div class="methods">
-<div class="line">+ loadSampleData(): void {static}</div>
-</div>
-</div>
-
-</div></div>
-
-<!-- SCREENS -->
-<div class="pkg">
-<div class="pkg-title">screens</div>
-<div class="grid">
-
-<div class="card">
-<div class="card-head">MainFile</div>
-<div class="attrs">
-<div class="line">+ currentUser: User {static}</div>
-<div class="line">+ loginScreen: LoginScreen {static}</div>
-</div>
-<div class="methods">
-<div class="line">+ main(args: String[]): void {static}</div>
-</div>
-</div>
-
-<div class="card">
-<div class="card-head">LoginScreen <span class="ext">extends JFrame</span></div>
-<div class="attrs">
-<div class="line">- loginUsername: JTextField</div>
-<div class="line">- loginPassword: JPasswordField</div>
-<div class="line">- users: ArrayList&lt;User&gt;</div>
-<div class="line">- formCardLayout: CardLayout</div>
-<div class="line">- formContainer: JPanel</div>
-<div class="line">- tabLogin, tabRegister: JButton</div>
-</div>
-<div class="methods">
-<div class="line">+ LoginScreen()</div>
-<div class="line">+ refreshUsers(): void</div>
-<div class="line">- buildUI(): void</div>
-<div class="line">- buildBrandPanel(): JPanel</div>
-<div class="line">- buildFormPanel(): JPanel</div>
-<div class="line">- createTabButton(text, active): JButton</div>
-<div class="line">- switchTab(isLogin: boolean): void</div>
-<div class="line">- createLoginForm(): JPanel</div>
-<div class="line">- createRoundedField(placeholder): JTextField</div>
-<div class="line">- createRoundedPasswordField(placeholder): JPasswordField</div>
-<div class="line">- handleLogin(): void</div>
-</div>
-</div>
-
-<div class="card">
-<div class="card-head">RegisterScreen <span class="ext">extends JPanel</span></div>
-<div class="attrs">
-<div class="line">- loginScreen: LoginScreen</div>
-<div class="line">- usernameField, emailField, displayNameField: JTextField</div>
-<div class="line">- passwordField: JPasswordField</div>
-<div class="line">- clubCheckBox: JCheckBox</div>
-<div class="line">- verificationCode: int</div>
-</div>
-<div class="methods">
-<div class="line">+ RegisterScreen(loginScreen: LoginScreen)</div>
-<div class="line">- initComponents(): void</div>
-<div class="line">- handleRegister(): void</div>
-</div>
-</div>
-
-<div class="card">
-<div class="card-head">HomeScreen <span class="ext">extends JFrame</span></div>
-<div class="attrs">
-<div class="line">- cardLayout: CardLayout</div>
-<div class="line">- contentPanel: JPanel</div>
-<div class="line">- myProfilePanel, viewedProfilePanel: ProfilePanel</div>
-<div class="line">- profileStack: Stack&lt;User&gt;</div>
-</div>
-<div class="methods">
-<div class="line">+ HomeScreen()</div>
-<div class="line">- buildTopBar(): JPanel</div>
-<div class="line">- buildSideNav(): JPanel</div>
-<div class="line">- buildContent(): JPanel</div>
-<div class="line">- showPanel(panel, name): void</div>
-<div class="line">+ showFeed(): void</div>
-<div class="line">+ showMyProfile(): void</div>
-<div class="line">+ navigateToProfile(user: User): void</div>
-<div class="line">+ goBackFromProfile(): void</div>
-<div class="line">+ showEventDetail(event: Event): void</div>
-<div class="line">+ changeAttendance(event, status): void</div>
-<div class="line">+ addComment(event, text, parentId): void</div>
-<div class="line">+ followUser(target): void</div>
-<div class="line">+ unfollowUser(target): void</div>
-<div class="line">+ createEvent(event: Event): void</div>
-<div class="line">- createNavLink(text, active): JButton</div>
-<div class="line">- makeIconBtn(emoji): JButton</div>
-</div>
-</div>
-
-</div></div>
-
-<!-- PANELS -->
-<div class="pkg">
-<div class="pkg-title">panels</div>
-<div class="grid">
-
-<div class="card"><div class="card-head">FeedPanel <span class="ext">extends JPanel</span></div><div class="attrs"><div class="line">- home: HomeScreen</div><div class="line">- gridPanel: JPanel</div><div class="line">- currentFilter, currentSort: String</div></div><div class="methods"><div class="line">+ FeedPanel(home: HomeScreen)</div><div class="line">- buildUI(): void</div><div class="line">+ refreshGrid(): void</div><div class="line">- createCard(ev: Event): JPanel</div><div class="line">- createRecRow(ev, interests): JPanel</div><div class="line">- createSectionHeader(num, title, sub): JPanel</div><div class="line">- createPill(text, active): JButton</div><div class="line">- sortEvents(events): void</div><div class="line">- getFilteredEvents(): ArrayList&lt;Event&gt;</div><div class="line">- loadImage(path): BufferedImage</div></div></div>
-
-<div class="card"><div class="card-head">EventDetailPanel <span class="ext">extends JPanel</span></div><div class="attrs"><div class="line">- event: Event</div><div class="line">- homeScreen: HomeScreen</div></div><div class="methods"><div class="line">+ EventDetailPanel(event, homeScreen)</div><div class="line">- createBody(): JScrollPane</div><div class="line">- createProp(label, value): JPanel</div><div class="line">- buildAttendanceSection(): JPanel</div><div class="line">- createStatusBtn(text, color, selected): JButton</div><div class="line">- buildAttendeesSection(): JPanel</div><div class="line">- buildCommentsSection(): JPanel</div><div class="line">- createCommentRow(comment, indent): JPanel</div><div class="line">- createCommentInput(parentId): JPanel</div></div></div>
-
-<div class="card"><div class="card-head">ProfilePanel <span class="ext">extends JPanel</span></div><div class="attrs"><div class="line">- user: User</div><div class="line">- home: HomeScreen</div><div class="line">- isOtherUser: boolean</div></div><div class="methods"><div class="line">+ ProfilePanel(user, home, isOtherUser)</div><div class="line">- buildUI(): void</div><div class="line">- showFollowDialog(followers, following): void</div></div></div>
-
-<div class="card"><div class="card-head">CreateEventPanel <span class="ext">extends JPanel</span></div><div class="attrs"><div class="line">- home: HomeScreen</div><div class="line">- titleField, locationField, tagsField: JTextField</div><div class="line">- descArea: JTextArea</div><div class="line">- dayS, monthS, yearS, hourS, minS: JSpinner</div><div class="line">- capacitySpin, xpSpin: JSpinner</div><div class="line">- tierCombo: JComboBox&lt;String&gt;</div><div class="line">- imageLabel: JLabel</div><div class="line">- selectedImagePath: String</div></div><div class="methods"><div class="line">+ CreateEventPanel(home: HomeScreen)</div><div class="line">- buildUI(): void</div><div class="line">- createDateRow(now, withTime): JPanel</div><div class="line">- chooseImage(): void</div><div class="line">- handleCreate(): void</div><div class="line">- createFieldLabel(text): JLabel</div></div></div>
-
-<div class="card"><div class="card-head">CalendarPanel <span class="ext">extends JPanel</span></div><div class="attrs"><div class="line">- home: HomeScreen</div><div class="line">- currentMonth: YearMonth</div><div class="line">- calGrid: JPanel</div><div class="line">- monthLabel: JLabel</div></div><div class="methods"><div class="line">+ CalendarPanel(home: HomeScreen)</div><div class="line">- buildUI(): void</div><div class="line">- refreshCal(): void</div></div></div>
-
-<div class="card"><div class="card-head">DiscoverPanel <span class="ext">extends JPanel</span></div><div class="attrs"><div class="line">- home: HomeScreen</div></div><div class="methods"><div class="line">+ DiscoverPanel(home: HomeScreen)</div><div class="line">- buildUI(): void</div><div class="line">- createEventRow(ev: Event): JPanel</div></div></div>
-
-<div class="card"><div class="card-head">LeaderboardPanel <span class="ext">extends JPanel</span></div><div class="attrs"><div class="line">- home: HomeScreen</div></div><div class="methods"><div class="line">+ LeaderboardPanel(home: HomeScreen)</div><div class="line">- buildUI(): void</div><div class="line">- createRow(rank, u): JPanel</div></div></div>
-
-<div class="card"><div class="card-head">MessagingPanel <span class="ext">extends JPanel</span></div><div class="attrs"><div class="line">- home: HomeScreen</div><div class="line">- chatPanel: JPanel</div><div class="line">- msgField: JTextField</div><div class="line">- selectedUser: String</div><div class="line">- convList: JPanel</div></div><div class="methods"><div class="line">+ MessagingPanel(home: HomeScreen)</div><div class="line">- buildUI(): void</div><div class="line">- refreshConversations(): void</div><div class="line">- loadChat(): void</div><div class="line">- sendMessage(): void</div><div class="line">- newConversation(): void</div></div></div>
-
-<div class="card"><div class="card-head">NotificationsPanel <span class="ext">extends JPanel</span></div><div class="sep2"></div><div class="methods"><div class="line">+ NotificationsPanel(home: HomeScreen)</div></div></div>
-
-<div class="card"><div class="card-head">SearchPanel <span class="ext">extends JPanel</span></div><div class="attrs"><div class="line">- home: HomeScreen</div><div class="line">- searchField: JTextField</div><div class="line">- resultsPanel: JPanel</div></div><div class="methods"><div class="line">+ SearchPanel(home: HomeScreen)</div><div class="line">+ searchFor(query: String): void</div><div class="line">- buildUI(): void</div><div class="line">- performSearch(): void</div></div></div>
-
-<div class="card"><div class="card-head">UIHelper</div><div class="sep2"></div><div class="methods"><div class="line">+ createButton(text, bg, fg): JButton {static}</div><div class="line">+ createOutlineButton(text, color): JButton {static}</div><div class="line">+ createTagButton(text, color, selected): JButton {static}</div><div class="line">+ createLabel(text): JLabel {static}</div><div class="line">+ createSmallLabel(text): JLabel {static}</div><div class="line">+ createSectionLabel(text): JLabel {static}</div><div class="line">+ createPageTitle(text): JLabel {static}</div><div class="line">+ createSubtitle(text): JLabel {static}</div><div class="line">+ createBadgeLabel(text, bg, fg): JLabel {static}</div><div class="line">+ createStyledField(): JTextField {static}</div><div class="line">+ createStyledPasswordField(): JPasswordField {static}</div><div class="line">+ createPlaceholderField(placeholder): JTextField {static}</div><div class="line">+ getFieldText(field, placeholder): String {static}</div><div class="line">+ createCard(): JPanel {static}</div><div class="line">+ showError(parent, message): void {static}</div><div class="line">+ showSuccess(parent, message): void {static}</div><div class="line">+ showConfirm(parent, message): boolean {static}</div><div class="line">+ createAvatar(letter, color, size): JPanel {static}</div><div class="line">+ createClickableUsername(user, homeScreen): JLabel {static}</div><div class="line">+ createFullWidthGBC(): GridBagConstraints {static}</div><div class="line">+ createSeparator(): JSeparator {static}</div><div class="line">+ createFieldLabel(text): JLabel {static}</div><div class="line">+ createPagePanel(): JPanel {static}</div><div class="line">+ wrapInScroll(content): JScrollPane {static}</div></div></div>
-
-<div class="card"><div class="card-head">ForgotPasswordDialog <span class="ext">extends JDialog</span></div><div class="attrs"><div class="line">- emailField, codeField: JTextField</div><div class="line">- newPasswordField, confirmPasswordField: JPasswordField</div><div class="line">- btnSendCode, btnReset: JButton</div><div class="line">- codePanel: JPanel</div><div class="line">- verificationCode: int</div><div class="line">- targetEmail, targetUsername: String</div></div><div class="methods"><div class="line">+ ForgotPasswordDialog(parent: Window)</div><div class="line">- createHeader(): JPanel</div><div class="line">- createForm(): JPanel</div><div class="line">- handleSendCode(): void</div><div class="line">- handleReset(): void</div><div class="line">- findUsernameByEmail(email): String</div></div></div>
-
-<div class="card"><div class="card-head">InterestSelectionDialog <span class="ext">extends JDialog</span></div><div class="attrs"><div class="line">- confirmed: boolean</div><div class="line">- checkBoxes: ArrayList&lt;JCheckBox&gt;</div></div><div class="methods"><div class="line">+ InterestSelectionDialog(owner, currentInterests)</div><div class="line">- buildUI(current: ArrayList&lt;String&gt;): void</div><div class="line">+ isConfirmed(): boolean</div><div class="line">+ getSelectedInterests(): ArrayList&lt;String&gt;</div></div></div>
-
-</div></div>
-
-<!-- TOOLS -->
-<div class="pkg">
-<div class="pkg-title">tools</div>
-<div class="grid">
-
-<div class="card"><div class="card-head">PasswordUtil</div><div class="attrs"><div class="line">- random: SecureRandom {static final}</div></div><div class="methods"><div class="line">+ generateSalt(): String {static}</div><div class="line">+ hashPassword(password, salt): String {static}</div><div class="line">+ verifyPassword(password, storedHash, storedSalt): boolean {static}</div></div></div>
-
-<div class="card"><div class="card-head">PosterGenerator</div><div class="attrs"><div class="line">- WIDTH, HEIGHT: int {static final}</div><div class="line">- rand: Random {static final}</div><div class="line">- PASTELS: Color[] {static final}</div></div><div class="methods"><div class="line">- pickColor(tags): int {static}</div><div class="line">+ getColorForTags(tags): Color {static}</div><div class="line">+ getColorForEvent(eventId): Color {static}</div><div class="line">+ getCategoryEmoji(tags): String {static}</div><div class="line">+ generate(title, tags, dateStr, location, xp): String {static}</div><div class="line">+ generateDefault(ev: Event): String {static}</div></div></div>
-
-<div class="card"><div class="card-head">EmailSender</div><div class="attrs"><div class="line">- SENDER_EMAIL, SENDER_PASSWORD, SMTP_HOST: String {static}</div><div class="line">- SMTP_PORT: int {static}</div><div class="line">- random: Random {static final}</div></div><div class="methods"><div class="line">+ generateCode(): int {static}</div><div class="line">+ sendVerificationEmail(toEmail, code): boolean {static}</div><div class="line">+ sendPasswordResetEmail(toEmail, code): boolean {static}</div><div class="line">- sendEmail(toEmail, subject, body): boolean {static}</div></div></div>
-
-<div class="card"><div class="card-head">ExperienceSystem</div><div class="sep2"></div><div class="methods"><div class="line">+ getTierName(xp: int): String {static}</div><div class="line">+ getTierColor(xp: int): Color {static}</div><div class="line">+ getTierIndex(xp: int): int {static}</div></div></div>
-
-</div></div>
+<p class="sub">Team Manifest &#10084;&#65039;&#128156;&#128153;&#128154;&#129397;&#128155; — UML Class Diagram</p>
 
 <!-- RELATIONSHIPS -->
 <div class="rel-box">
@@ -476,9 +76,520 @@ h1{font-size:16px;font-weight:700;text-align:center;margin-bottom:4px;text-trans
 <div class="rel-line">LoginScreen ◆── RegisterScreen (composition)</div>
 <div class="rel-line">Database ───→ User, Event, Comment (creates/queries)</div>
 <div class="rel-line">MainFile ───→ LoginScreen, HomeScreen (creates)</div>
-<div class="rel-line">UIHelper ···→ tüm paneller (utility dependency)</div>
-<div class="rel-line">AppConstants ···→ tüm sınıflar (utility dependency)</div>
+<div class="rel-line">UIHelper ···→ all panels (utility dependency)</div>
+<div class="rel-line">AppConstants ···→ all classes (utility dependency)</div>
 </div>
 
+<div id="app"></div>
+
+<script>
+// ==================== DATA ====================
+const TIPS = {
+"Searchable": {
+  "matchesSearch(query: String): boolean": { desc: "Checks if search query matches the object", uses: [] },
+  "getSearchSummary(): String": { desc: "Returns summary text for search results", uses: [] }
+},
+"AttendanceStatus": {
+  "getDisplayName(): String": { desc: "Returns the display name of the attendance status", uses: [] },
+  "fromString(s: String): AttendanceStatus": { desc: "Parses string to enum value (for DB deserialization)", uses: [] }
+},
+"User": {
+  "User(username, displayName, email, password, salt, bio)": { desc: "Creates user with all fields (pre-hashed password and salt)", uses: [] },
+  "User(username, displayName, email, plainPassword, bio)": { desc: "Creates user, auto-generates salt and hashes password", uses: ["PasswordUtil"] },
+  "User(username, password)": { desc: "Shorthand constructor with username and password only", uses: ["PasswordUtil"] },
+  "getUsername(): String": { desc: "Returns the username", uses: [] },
+  "getDisplayName(): String": { desc: "Returns the display name", uses: [] },
+  "getEmail(): String": { desc: "Returns the email address", uses: [] },
+  "getPassword(): String": { desc: "Returns the hashed password", uses: [] },
+  "getSalt(): String": { desc: "Returns the password salt", uses: [] },
+  "getBio(): String": { desc: "Returns the user bio", uses: [] },
+  "isVerified(): boolean": { desc: "Returns whether the account is verified", uses: [] },
+  "getInterests(): ArrayList<String>": { desc: "Returns list of user interests", uses: [] },
+  "getFollowing(): ArrayList<String>": { desc: "Returns list of followed users", uses: [] },
+  "getFollowers(): ArrayList<String>": { desc: "Returns list of followers", uses: [] },
+  "getAttending(): ArrayList<Integer>": { desc: "Returns list of attending event IDs", uses: [] },
+  "getNotifications(): ArrayList<String>": { desc: "Returns notification messages", uses: [] },
+  "getXp(): int": { desc: "Returns the user's XP points", uses: [] },
+  "isClub(): boolean": { desc: "Returns false for regular users (overridden by ClubUser)", uses: [] },
+  "getProfileBadge(): String": { desc: "Returns profile badge with username and verification mark", uses: [] },
+  "setUsername(username: String): void": { desc: "Updates the username", uses: [] },
+  "setDisplayName(displayName: String): void": { desc: "Updates the display name", uses: [] },
+  "setEmail(email: String): void": { desc: "Updates the email address", uses: [] },
+  "setPassword(password: String): void": { desc: "Updates the hashed password", uses: [] },
+  "setSalt(salt: String): void": { desc: "Updates the salt value", uses: [] },
+  "setBio(bio: String): void": { desc: "Updates the bio", uses: [] },
+  "setVerified(verified: boolean): void": { desc: "Sets the verification status", uses: [] },
+  "setInterests(interests: ArrayList<String>): void": { desc: "Replaces the interests list", uses: [] },
+  "setFollowing(following: ArrayList<String>): void": { desc: "Replaces the following list", uses: [] },
+  "setFollowers(followers: ArrayList<String>): void": { desc: "Replaces the followers list", uses: [] },
+  "setAttending(attending: ArrayList<Integer>): void": { desc: "Replaces the attending list", uses: [] },
+  "setNotifications(notifications: ArrayList<String>): void": { desc: "Replaces the notifications list", uses: [] },
+  "setXp(xp: int): void": { desc: "Sets XP points", uses: [] },
+  "addInterest(interest: String): void": { desc: "Adds interest if not already present", uses: [] },
+  "removeInterest(interest: String): void": { desc: "Removes interest from list", uses: [] },
+  "addFollowing(username: String): void": { desc: "Adds user to following list", uses: [] },
+  "removeFollowing(username: String): void": { desc: "Removes user from following list", uses: [] },
+  "addFollower(username: String): void": { desc: "Adds user to followers list", uses: [] },
+  "removeFollower(username: String): void": { desc: "Removes user from followers list", uses: [] },
+  "addAttending(eventId: int): void": { desc: "Adds event ID to attending list", uses: [] },
+  "removeAttending(eventId: int): void": { desc: "Removes event ID from attending list", uses: [] },
+  "addNotification(message: String): void": { desc: "Adds notification message", uses: [] },
+  "isFollowing(username: String): boolean": { desc: "Checks if user is following the given username", uses: [] },
+  "checkPassword(plainPassword: String): boolean": { desc: "Hashes input and compares with stored password", uses: ["PasswordUtil"] },
+  "matchesSearch(query: String): boolean": { desc: "Searches username, display name and interests for query", uses: [] },
+  "getSearchSummary(): String": { desc: "Returns profile badge and bio for search display", uses: [] },
+  "toString(): String": { desc: "Returns debug text representation", uses: [] }
+},
+"ClubUser": {
+  "ClubUser(username, displayName, email, password, salt, bio)": { desc: "Creates club user with pre-hashed password", uses: ["User"] },
+  "ClubUser(username, displayName, email, plainPassword, bio)": { desc: "Creates club user, auto-hashes password", uses: ["User","PasswordUtil"] },
+  "isClub(): boolean": { desc: "Always returns true (polymorphic override)", uses: [] },
+  "getProfileBadge(): String": { desc: "Returns badge with [CLUB] tag appended", uses: [] },
+  "toString(): String": { desc: "Returns debug text representation", uses: [] }
+},
+"Event": {
+  "Event(id, title, desc, location, dateTime, endDateTime, deadline, capacity, creator)": { desc: "Creates event with all date fields explicitly set", uses: ["AppConstants","Comment","AttendanceStatus"] },
+  "Event(id, title, desc, location, dateTime, capacity, creator)": { desc: "Shorthand constructor, auto-calculates end and deadline", uses: ["AppConstants","Comment","AttendanceStatus"] },
+  "getId(): int": { desc: "Returns event ID", uses: [] },
+  "getTitle(): String": { desc: "Returns event title", uses: [] },
+  "getDescription(): String": { desc: "Returns event description", uses: [] },
+  "getLocation(): String": { desc: "Returns event location", uses: [] },
+  "getDateTime(): LocalDateTime": { desc: "Returns start date/time", uses: [] },
+  "getEndDateTime(): LocalDateTime": { desc: "Returns end date/time", uses: [] },
+  "getRegistrationDeadline(): LocalDateTime": { desc: "Returns registration deadline", uses: [] },
+  "getCapacity(): int": { desc: "Returns event capacity", uses: [] },
+  "getCreatorUsername(): String": { desc: "Returns creator's username", uses: [] },
+  "getTags(): ArrayList<String>": { desc: "Returns event tags", uses: [] },
+  "getComments(): ArrayList<Comment>": { desc: "Returns event comments", uses: ["Comment"] },
+  "getAttendanceMap(): HashMap<String, AttendanceStatus>": { desc: "Returns attendee-status mapping", uses: ["AttendanceStatus"] },
+  "getImagePath(): String": { desc: "Returns poster image file path", uses: [] },
+  "getXpReward(): int": { desc: "Returns XP reward amount", uses: [] },
+  "getMinTierIndex(): int": { desc: "Returns minimum tier index required", uses: [] },
+  "getDateStr(): String": { desc: "Returns formatted start date string", uses: [] },
+  "getEndDateStr(): String": { desc: "Returns formatted end date string", uses: [] },
+  "getDeadlineStr(): String": { desc: "Returns formatted deadline string", uses: [] },
+  "getMinTierName(): String": { desc: "Returns minimum required tier name", uses: ["AppConstants"] },
+  "getAttendees(): ArrayList<String>": { desc: "Returns all attendee usernames", uses: [] },
+  "getAttendeesByStatus(status: AttendanceStatus): ArrayList<String>": { desc: "Filters attendees by status", uses: ["AttendanceStatus"] },
+  "getGoingCount(): int": { desc: "Returns count of GOING attendees", uses: ["AttendanceStatus"] },
+  "getInterestedCount(): int": { desc: "Returns count of INTERESTED attendees", uses: ["AttendanceStatus"] },
+  "getMaybeCount(): int": { desc: "Returns count of MAYBE attendees", uses: ["AttendanceStatus"] },
+  "getAttendeeCount(): int": { desc: "Returns total attendee count", uses: [] },
+  "isFull(): boolean": { desc: "Checks if event has reached capacity", uses: ["AttendanceStatus"] },
+  "isDeadlinePassed(): boolean": { desc: "Checks if registration deadline has passed", uses: [] },
+  "isEventPast(): boolean": { desc: "Checks if event date has passed", uses: [] },
+  "canJoin(userXP: int): boolean": { desc: "Checks if user XP meets minimum tier requirement", uses: ["AppConstants"] },
+  "setId(id: int): void": { desc: "Sets event ID", uses: [] },
+  "setTitle(title: String): void": { desc: "Sets event title", uses: [] },
+  "setDescription(description: String): void": { desc: "Sets event description", uses: [] },
+  "setEndDateTime(endDateTime: LocalDateTime): void": { desc: "Sets end date/time", uses: [] },
+  "setRegistrationDeadline(deadline: LocalDateTime): void": { desc: "Sets registration deadline", uses: [] },
+  "setTags(tags: ArrayList<String>): void": { desc: "Replaces event tags", uses: [] },
+  "setComments(comments: ArrayList<Comment>): void": { desc: "Replaces event comments", uses: ["Comment"] },
+  "setAttendanceMap(map: HashMap<String, AttendanceStatus>): void": { desc: "Replaces attendance map", uses: ["AttendanceStatus"] },
+  "setImagePath(path: String): void": { desc: "Sets poster image path", uses: [] },
+  "setXpReward(xp: int): void": { desc: "Sets XP reward", uses: [] },
+  "setMinTierIndex(idx: int): void": { desc: "Sets minimum tier index", uses: [] },
+  "setAttendees(attendees: ArrayList<String>): void": { desc: "Bulk adds attendees as GOING", uses: ["AttendanceStatus"] },
+  "addTag(tag: String): void": { desc: "Adds tag if not duplicate", uses: [] },
+  "setAttendance(u: String, s: AttendanceStatus): void": { desc: "Sets user's attendance status", uses: ["AttendanceStatus"] },
+  "removeAttendance(u: String): void": { desc: "Removes user from attendance map", uses: [] },
+  "getAttendanceStatus(u: String): AttendanceStatus": { desc: "Returns user's attendance status", uses: ["AttendanceStatus"] },
+  "isAttending(u: String): boolean": { desc: "Checks if user is attending", uses: [] },
+  "addAttendee(u: String): void": { desc: "Adds user as GOING", uses: ["AttendanceStatus"] },
+  "removeAttendee(u: String): void": { desc: "Removes user from attendees", uses: [] },
+  "addComment(c: Comment): void": { desc: "Adds comment to event", uses: ["Comment"] },
+  "matchesSearch(query: String): boolean": { desc: "Searches title, description, location, creator and tags", uses: [] },
+  "getSearchSummary(): String": { desc: "Returns title, location and date summary", uses: [] },
+  "toString(): String": { desc: "Returns debug text representation", uses: [] }
+},
+"Comment": {
+  "Comment(username, text)": { desc: "Creates top-level comment with auto timestamp", uses: [] },
+  "Comment(username, text, time)": { desc: "Creates comment with specified time", uses: [] },
+  "Comment(id, username, text, time, parentId)": { desc: "Creates comment from all DB fields", uses: [] },
+  "getId(): int": { desc: "Returns comment ID", uses: [] },
+  "getUsername(): String": { desc: "Returns commenter's username", uses: [] },
+  "getText(): String": { desc: "Returns comment text", uses: [] },
+  "getTime(): String": { desc: "Returns comment timestamp", uses: [] },
+  "getParentId(): int": { desc: "Returns parent comment ID (0 if top-level)", uses: [] },
+  "setId(id: int): void": { desc: "Sets comment ID", uses: [] },
+  "setParentId(parentId: int): void": { desc: "Sets parent comment ID", uses: [] },
+  "isReply(): boolean": { desc: "Checks if comment is a reply (parentId > 0)", uses: [] },
+  "toString(): String": { desc: "Returns debug text representation", uses: [] }
+},
+"Database": {
+  "createConnection(): void {static}": { desc: "Connects to MySQL and creates required tables", uses: ["AppConstants"] },
+  "createTables(): void {static}": { desc: "Creates all application tables via DDL", uses: [] },
+  "migrateAttendeesTable(stmt: Statement): void {static}": { desc: "Migrates legacy attendees table to attendance table", uses: [] },
+  "addColumnIfNotExists(stmt, table, col, def): void {static}": { desc: "Adds column to table if not already present (schema evolution)", uses: [] },
+  "addToDatabase(user: User): void {static}": { desc: "Inserts user and interests into database", uses: ["User"] },
+  "addToDatabase(event: Event): int {static}": { desc: "Inserts event and tags, returns generated ID", uses: ["Event"] },
+  "addToDatabase(comment: Comment, eventId: int): int {static}": { desc: "Inserts comment for event, returns generated ID", uses: ["Comment"] },
+  "deleteFromDatabase(user: User): void {static}": { desc: "Deletes user and all related data (interests, follows, notifications)", uses: ["User"] },
+  "deleteFromDatabase(event: Event): void {static}": { desc: "Deletes event and all related data (comments, attendance, tags)", uses: ["Event"] },
+  "exec(sql: String, params: Object...): void {static}": { desc: "Executes parameterized SQL update (internal helper)", uses: [] },
+  "setAttendance(eventId, username, status): void {static}": { desc: "Sets or updates user's attendance status for event", uses: ["AttendanceStatus"] },
+  "removeAttendance(eventId, username): void {static}": { desc: "Removes user's attendance record from event", uses: [] },
+  "getAttendanceMap(eventId): HashMap {static}": { desc: "Returns all attendee-status mappings for event", uses: ["AttendanceStatus"] },
+  "addAttendee(eid, u): void {static}": { desc: "Adds user as GOING attendee", uses: ["AttendanceStatus"] },
+  "deleteAttendee(eid, u): void {static}": { desc: "Removes user from event attendees", uses: [] },
+  "getAttendees(eid): ArrayList<String> {static}": { desc: "Returns all attendee usernames for event", uses: [] },
+  "addFollow(follower, following): void {static}": { desc: "Creates follow relationship in database", uses: [] },
+  "deleteFollow(follower, following): void {static}": { desc: "Removes follow relationship from database", uses: [] },
+  "getFollowers(u): ArrayList<String> {static}": { desc: "Fetches user's followers from database", uses: [] },
+  "getFollowing(u): ArrayList<String> {static}": { desc: "Fetches user's following list from database", uses: [] },
+  "addEventTag(eid, tag): void {static}": { desc: "Adds tag to event", uses: [] },
+  "getEventTags(eid): ArrayList<String> {static}": { desc: "Fetches event tags from database", uses: [] },
+  "addInterest(u, i): void {static}": { desc: "Adds interest to user", uses: [] },
+  "removeInterest(u, i): void {static}": { desc: "Removes interest from user", uses: [] },
+  "getInterests(u): ArrayList<String> {static}": { desc: "Fetches user interests from database", uses: [] },
+  "setInterests(u, list): void {static}": { desc: "Clears and re-sets user interests", uses: [] },
+  "addNotification(u, msg): void {static}": { desc: "Adds notification message for user", uses: [] },
+  "getNotifications(u): ArrayList<String> {static}": { desc: "Fetches user notification messages", uses: [] },
+  "sendMessage(sender, receiver, text): void {static}": { desc: "Sends direct message between users", uses: [] },
+  "getMessages(user1, user2): ArrayList<String[]> {static}": { desc: "Returns message history between two users", uses: [] },
+  "getConversationPartners(username): ArrayList<String> {static}": { desc: "Returns list of users the user has messaged", uses: [] },
+  "getAllUsers(): ArrayList<User> {static}": { desc: "Returns all users with interests and follow data", uses: ["User","ClubUser"] },
+  "getUserWithUsername(username): User {static}": { desc: "Fetches single user by username", uses: ["User","ClubUser"] },
+  "buildUser(rs: ResultSet): User {static}": { desc: "Constructs User or ClubUser from ResultSet", uses: ["User","ClubUser"] },
+  "updateUserVerified(u, v): void {static}": { desc: "Updates user verification status", uses: [] },
+  "updateUserPassword(u, hash, salt): void {static}": { desc: "Updates user password hash and salt", uses: [] },
+  "updateUserBio(u, bio): void {static}": { desc: "Updates user biography", uses: [] },
+  "getAllEvents(): ArrayList<Event> {static}": { desc: "Returns all events with tags, attendance and comments", uses: ["Event","Comment","AttendanceStatus"] },
+  "buildEvent(rs: ResultSet): Event {static}": { desc: "Constructs Event from ResultSet and loads related data", uses: ["Event","Comment","AttendanceStatus"] },
+  "parseOptDT(s: String): LocalDateTime {static}": { desc: "Parses optional datetime string, returns null if invalid", uses: [] },
+  "getComments(eid): ArrayList<Comment> {static}": { desc: "Fetches all comments for event", uses: ["Comment"] },
+  "getPopularEventIds(limit): ArrayList<Integer> {static}": { desc: "Returns most attended event IDs", uses: [] },
+  "getRecommendedEventIds(username, limit): ArrayList<Integer> {static}": { desc: "Returns recommended event IDs based on user interests", uses: [] },
+  "getLeaderboard(limit): ArrayList<User> {static}": { desc: "Returns users ranked by XP", uses: ["User","ClubUser"] },
+  "getUserXP(u): int {static}": { desc: "Fetches user XP from database", uses: [] },
+  "addXP(u, amount): void {static}": { desc: "Adds XP amount to user (can be negative)", uses: [] },
+  "isEmailTaken(email): boolean {static}": { desc: "Checks if email is already registered", uses: [] },
+  "updateEventImage(eventId, path): void {static}": { desc: "Updates event poster image path", uses: [] },
+  "isDatabaseEmpty(): boolean {static}": { desc: "Checks if users table is empty", uses: [] },
+  "qList(sql, col, param): ArrayList<String> {static}": { desc: "Helper: executes query and returns single column as list", uses: [] }
+},
+"AppConstants": {
+  "loadCredentials(): Properties {static}": { desc: "Loads DB credentials from credentials.properties file", uses: [] },
+  "getTierIndex(xp: int): int {static}": { desc: "Calculates tier index from XP value", uses: [] },
+  "getTierName(xp: int): String {static}": { desc: "Returns tier name for given XP", uses: [] },
+  "getTierColor(xp: int): Color {static}": { desc: "Returns tier color for given XP", uses: [] },
+  "getNextTierXP(xp: int): int {static}": { desc: "Returns XP threshold for next tier", uses: [] },
+  "getNextTierName(xp: int): String {static}": { desc: "Returns next tier name", uses: [] }
+},
+"SampleData": {
+  "loadSampleData(): void {static}": { desc: "Populates DB with demo users, events, follows, comments and messages", uses: ["User","ClubUser","Event","Comment","Database","AttendanceStatus","PasswordUtil","PosterGenerator"] }
+},
+"MainFile": {
+  "main(args: String[]): void {static}": { desc: "Launches app: sets L&F, connects DB, loads sample data, shows login", uses: ["Database","SampleData","LoginScreen"] }
+},
+"LoginScreen": {
+  "LoginScreen()": { desc: "Creates login window and loads user list", uses: ["Database","AppConstants"] },
+  "refreshUsers(): void": { desc: "Reloads user list from database", uses: ["Database","User"] },
+  "buildUI(): void": { desc: "Builds the main user interface", uses: [] },
+  "buildBrandPanel(): JPanel": { desc: "Creates gradient brand panel", uses: ["AppConstants"] },
+  "buildFormPanel(): JPanel": { desc: "Creates CardLayout panel with login and register forms", uses: ["AppConstants","RegisterScreen"] },
+  "createTabButton(text, active): JButton": { desc: "Creates login/register tab button", uses: ["AppConstants"] },
+  "switchTab(isLogin: boolean): void": { desc: "Switches between login and register tabs", uses: ["AppConstants"] },
+  "createLoginForm(): JPanel": { desc: "Creates form with username and password fields", uses: ["AppConstants","ForgotPasswordDialog"] },
+  "createRoundedField(placeholder): JTextField": { desc: "Creates rounded text field with placeholder", uses: ["AppConstants"] },
+  "createRoundedPasswordField(placeholder): JPasswordField": { desc: "Creates rounded password field with placeholder", uses: ["AppConstants"] },
+  "handleLogin(): void": { desc: "Validates credentials and opens home screen on success", uses: ["User","PasswordUtil","UIHelper","AppConstants","MainFile","HomeScreen","Database"] }
+},
+"RegisterScreen": {
+  "RegisterScreen(loginScreen: LoginScreen)": { desc: "Creates registration form panel", uses: ["LoginScreen","UIHelper","AppConstants"] },
+  "initComponents(): void": { desc: "Builds registration form components", uses: ["UIHelper","AppConstants"] },
+  "handleRegister(): void": { desc: "Validates input, sends email verification, hashes password and registers user", uses: ["Database","UIHelper","PasswordUtil","EmailSender","User","ClubUser","AppConstants","InterestSelectionDialog","LoginScreen"] }
+},
+"HomeScreen": {
+  "HomeScreen()": { desc: "Creates main app window and adds all panels to CardLayout", uses: ["MainFile","AppConstants","FeedPanel","SearchPanel","DiscoverPanel","CalendarPanel","LeaderboardPanel","CreateEventPanel","MessagingPanel","NotificationsPanel"] },
+  "buildTopBar(): JPanel": { desc: "Creates top bar with search, create button, profile and logout", uses: ["UIHelper","AppConstants","MainFile","SearchPanel","CreateEventPanel"] },
+  "buildSideNav(): JPanel": { desc: "Creates side navigation menu with page links", uses: ["AppConstants","FeedPanel","DiscoverPanel","CalendarPanel","MessagingPanel","LeaderboardPanel","NotificationsPanel"] },
+  "buildContent(): JPanel": { desc: "Creates CardLayout content area with all main panels", uses: ["FeedPanel","SearchPanel","DiscoverPanel","CalendarPanel","LeaderboardPanel","CreateEventPanel","MessagingPanel","NotificationsPanel","AppConstants"] },
+  "showPanel(panel, name): void": { desc: "Adds panel to CardLayout and makes it visible", uses: [] },
+  "showFeed(): void": { desc: "Shows the event feed panel", uses: ["FeedPanel"] },
+  "showMyProfile(): void": { desc: "Shows current user's profile panel", uses: ["ProfilePanel","MainFile"] },
+  "navigateToProfile(user: User): void": { desc: "Navigates to another user's profile and pushes to history stack", uses: ["User","ProfilePanel","MainFile"] },
+  "goBackFromProfile(): void": { desc: "Pops from profile navigation stack", uses: ["User","ProfilePanel"] },
+  "showEventDetail(event: Event): void": { desc: "Shows event detail panel", uses: ["Event","EventDetailPanel"] },
+  "changeAttendance(event, status): void": { desc: "Changes user's attendance status and awards XP", uses: ["Event","AttendanceStatus","Database","MainFile","AppConstants","UIHelper"] },
+  "addComment(event, text, parentId): void": { desc: "Adds comment to event, awards XP and sends notifications", uses: ["Event","Comment","Database","MainFile","AppConstants"] },
+  "followUser(target): void": { desc: "Follows target user, awards XP and sends notification", uses: ["Database","MainFile","AppConstants"] },
+  "unfollowUser(target): void": { desc: "Unfollows target user and deducts XP", uses: ["Database","MainFile","AppConstants"] },
+  "createEvent(event: Event): void": { desc: "Creates new event, awards XP and notifies followers", uses: ["Event","Database","MainFile","AppConstants"] },
+  "createNavLink(text, active): JButton": { desc: "Creates side nav link button", uses: ["AppConstants"] },
+  "makeIconBtn(emoji): JButton": { desc: "Creates emoji icon button", uses: [] }
+},
+"FeedPanel": {
+  "FeedPanel(home: HomeScreen)": { desc: "Creates event feed panel", uses: ["HomeScreen","AppConstants"] },
+  "buildUI(): void": { desc: "Builds hero area, XP bar, filter pills, grid and recommendations", uses: ["Database","MainFile","AppConstants","UIHelper","Event","PosterGenerator"] },
+  "refreshGrid(): void": { desc: "Reloads filtered and sorted event cards", uses: ["Event","AppConstants"] },
+  "createCard(ev: Event): JPanel": { desc: "Creates event card with poster or emoji", uses: ["Event","AppConstants","PosterGenerator","AttendanceStatus","MainFile"] },
+  "createRecRow(ev, interests): JPanel": { desc: "Creates recommendation row matched by interests", uses: ["Event","AppConstants","UIHelper"] },
+  "createSectionHeader(num, title, sub): JPanel": { desc: "Creates numbered section header", uses: ["AppConstants"] },
+  "createPill(text, active): JButton": { desc: "Creates filter pill button", uses: ["AppConstants"] },
+  "sortEvents(events): void": { desc: "Sorts events by date, location, XP or popularity", uses: ["Event"] },
+  "getFilteredEvents(): ArrayList<Event>": { desc: "Gets events filtered by active tag filter", uses: ["Database","Event"] },
+  "loadImage(path): BufferedImage": { desc: "Loads poster image from file path", uses: [] }
+},
+"EventDetailPanel": {
+  "EventDetailPanel(event, homeScreen)": { desc: "Creates event detail panel with scrollable body", uses: ["Event","HomeScreen","UIHelper"] },
+  "createBody(): JScrollPane": { desc: "Builds scrollable body with event info, attendance, attendees and comments", uses: ["Event","UIHelper","AppConstants","MainFile","Database"] },
+  "createProp(label, value): JPanel": { desc: "Creates label-value property row", uses: ["AppConstants"] },
+  "buildAttendanceSection(): JPanel": { desc: "Builds Going/Interested/Maybe attendance buttons", uses: ["AttendanceStatus","AppConstants","UIHelper","MainFile","Database","Event"] },
+  "createStatusBtn(text, color, selected): JButton": { desc: "Creates selected or unselected status button", uses: ["UIHelper"] },
+  "buildAttendeesSection(): JPanel": { desc: "Builds attendee list with clickable usernames", uses: ["UIHelper","AppConstants","Database","User","Event"] },
+  "buildCommentsSection(): JPanel": { desc: "Builds threaded comment list with reply support", uses: ["Comment","UIHelper","AppConstants","Event"] },
+  "createCommentRow(comment, indent): JPanel": { desc: "Creates single comment row with avatar, text and reply button", uses: ["Comment","User","Database","UIHelper","AppConstants"] },
+  "createCommentInput(parentId): JPanel": { desc: "Creates comment input field and send button", uses: ["UIHelper","AppConstants","Event"] }
+},
+"ProfilePanel": {
+  "ProfilePanel(user, home, isOtherUser)": { desc: "Creates user profile panel (own or other's)", uses: ["User","HomeScreen"] },
+  "buildUI(): void": { desc: "Builds profile header, bio, interests, followers and events", uses: ["User","Database","MainFile","UIHelper","AppConstants","Event","InterestSelectionDialog"] },
+  "showFollowDialog(followers, following): void": { desc: "Shows followers/following in searchable modal dialog", uses: ["Database","UIHelper","AppConstants","User"] }
+},
+"CreateEventPanel": {
+  "CreateEventPanel(home: HomeScreen)": { desc: "Creates event creation form panel", uses: ["HomeScreen"] },
+  "buildUI(): void": { desc: "Builds form with title, description, location, date pickers and settings", uses: ["UIHelper","AppConstants"] },
+  "createDateRow(now, withTime): JPanel": { desc: "Creates day/month/year and optional hour/min spinners", uses: [] },
+  "chooseImage(): void": { desc: "Opens file chooser for poster image selection", uses: ["AppConstants"] },
+  "handleCreate(): void": { desc: "Validates form, creates event, generates poster and notifies followers", uses: ["Event","Database","MainFile","UIHelper","AppConstants","PosterGenerator"] },
+  "createFieldLabel(text): JLabel": { desc: "Creates form field label", uses: ["AppConstants"] }
+},
+"CalendarPanel": {
+  "CalendarPanel(home: HomeScreen)": { desc: "Creates monthly calendar panel", uses: ["HomeScreen"] },
+  "buildUI(): void": { desc: "Builds month navigation and 7-column day grid", uses: ["AppConstants"] },
+  "refreshCal(): void": { desc: "Reloads events and updates calendar cells", uses: ["Database","Event","AppConstants"] }
+},
+"DiscoverPanel": {
+  "DiscoverPanel(home: HomeScreen)": { desc: "Creates discover panel with trending and recommendations", uses: ["HomeScreen"] },
+  "buildUI(): void": { desc: "Builds trending events and personalized recommendations UI", uses: ["Database","MainFile","UIHelper","AppConstants","Event"] },
+  "createEventRow(ev: Event): JPanel": { desc: "Creates event info row with view button", uses: ["Event","UIHelper","AppConstants"] }
+},
+"LeaderboardPanel": {
+  "LeaderboardPanel(home: HomeScreen)": { desc: "Creates XP leaderboard panel", uses: ["HomeScreen"] },
+  "buildUI(): void": { desc: "Builds tier explanation and ranked user rows", uses: ["Database","UIHelper","AppConstants","User"] },
+  "createRow(rank, u): JPanel": { desc: "Creates user row with rank, name, tier and XP bar", uses: ["User","AppConstants"] }
+},
+"MessagingPanel": {
+  "MessagingPanel(home: HomeScreen)": { desc: "Creates messaging panel with conversation list and chat area", uses: ["HomeScreen"] },
+  "buildUI(): void": { desc: "Builds split layout: left conversation list, right chat area", uses: ["Database","MainFile","UIHelper","AppConstants"] },
+  "refreshConversations(): void": { desc: "Reloads conversation partner list from database", uses: ["Database","MainFile"] },
+  "loadChat(): void": { desc: "Loads message history with selected user", uses: ["Database","MainFile","AppConstants"] },
+  "sendMessage(): void": { desc: "Sends message text and refreshes chat", uses: ["Database","MainFile"] },
+  "newConversation(): void": { desc: "Prompts for username and starts new conversation", uses: ["Database","UIHelper","User"] }
+},
+"NotificationsPanel": {
+  "NotificationsPanel(home: HomeScreen)": { desc: "Lists user notifications in reverse chronological order", uses: ["HomeScreen","Database","MainFile","UIHelper","AppConstants"] }
+},
+"SearchPanel": {
+  "SearchPanel(home: HomeScreen)": { desc: "Creates search panel with field, tag shortcuts and results area", uses: ["HomeScreen"] },
+  "searchFor(query: String): void": { desc: "Fills search field and triggers search (called from top bar)", uses: [] },
+  "buildUI(): void": { desc: "Builds search field, tag chips and results panel", uses: ["UIHelper","AppConstants"] },
+  "performSearch(): void": { desc: "Searches events and users via Searchable interface", uses: ["Database","UIHelper","AppConstants","Event","User"] }
+},
+"UIHelper": {
+  "createButton(text, bg, fg): JButton {static}": { desc: "Creates rounded padded button", uses: ["AppConstants"] },
+  "createOutlineButton(text, color): JButton {static}": { desc: "Creates bordered outline button", uses: ["AppConstants"] },
+  "createTagButton(text, color, selected): JButton {static}": { desc: "Creates filter tag button (selected or unselected)", uses: ["AppConstants"] },
+  "createLabel(text): JLabel {static}": { desc: "Creates standard text label", uses: ["AppConstants"] },
+  "createSmallLabel(text): JLabel {static}": { desc: "Creates small text label", uses: ["AppConstants"] },
+  "createSectionLabel(text): JLabel {static}": { desc: "Creates bold section heading label", uses: ["AppConstants"] },
+  "createPageTitle(text): JLabel {static}": { desc: "Creates large page title label", uses: ["AppConstants"] },
+  "createSubtitle(text): JLabel {static}": { desc: "Creates subtitle label", uses: ["AppConstants"] },
+  "createBadgeLabel(text, bg, fg): JLabel {static}": { desc: "Creates rounded badge label", uses: ["AppConstants"] },
+  "createStyledField(): JTextField {static}": { desc: "Creates styled text field with border and padding", uses: ["AppConstants"] },
+  "createStyledPasswordField(): JPasswordField {static}": { desc: "Creates styled password field with border and padding", uses: ["AppConstants"] },
+  "createPlaceholderField(placeholder): JTextField {static}": { desc: "Creates text field with focus-based placeholder", uses: ["AppConstants"] },
+  "getFieldText(field, placeholder): String {static}": { desc: "Gets actual text from field (returns empty if placeholder)", uses: [] },
+  "createCard(): JPanel {static}": { desc: "Creates white card panel with soft shadow", uses: ["AppConstants"] },
+  "showError(parent, message): void {static}": { desc: "Shows error message dialog", uses: [] },
+  "showSuccess(parent, message): void {static}": { desc: "Shows success message dialog", uses: [] },
+  "showConfirm(parent, message): boolean {static}": { desc: "Shows yes/no confirmation dialog", uses: [] },
+  "createAvatar(letter, color, size): JPanel {static}": { desc: "Creates circular avatar with initial letter and gradient", uses: [] },
+  "createClickableUsername(user, homeScreen): JLabel {static}": { desc: "Creates clickable username link that navigates to profile", uses: ["User","HomeScreen","AppConstants"] },
+  "createFullWidthGBC(): GridBagConstraints {static}": { desc: "Creates full-width GridBagConstraints", uses: [] },
+  "createSeparator(): JSeparator {static}": { desc: "Creates horizontal separator line", uses: ["AppConstants"] },
+  "createFieldLabel(text): JLabel {static}": { desc: "Creates form field label", uses: ["AppConstants"] },
+  "createPagePanel(): JPanel {static}": { desc: "Creates standard page panel with padding", uses: ["AppConstants"] },
+  "wrapInScroll(content): JScrollPane {static}": { desc: "Wraps panel in scroll pane", uses: [] }
+},
+"ForgotPasswordDialog": {
+  "ForgotPasswordDialog(parent: Window)": { desc: "Creates two-step password reset dialog", uses: ["AppConstants","UIHelper"] },
+  "createHeader(): JPanel": { desc: "Creates dark header bar", uses: ["AppConstants"] },
+  "createForm(): JPanel": { desc: "Creates email input and hidden code/new password form", uses: ["UIHelper","AppConstants"] },
+  "handleSendCode(): void": { desc: "Validates email, finds user and sends reset code", uses: ["Database","User","EmailSender","UIHelper"] },
+  "handleReset(): void": { desc: "Verifies code and updates password hash in database", uses: ["PasswordUtil","Database","UIHelper"] },
+  "findUsernameByEmail(email): String": { desc: "Finds username by email address from database", uses: ["Database","User"] }
+},
+"InterestSelectionDialog": {
+  "InterestSelectionDialog(owner, currentInterests)": { desc: "Creates interest selection dialog with current selections", uses: ["AppConstants","UIHelper"] },
+  "buildUI(current: ArrayList<String>): void": { desc: "Builds checkbox grid from INTEREST_CATEGORIES", uses: ["AppConstants","UIHelper"] },
+  "isConfirmed(): boolean": { desc: "Returns whether user clicked Confirm", uses: [] },
+  "getSelectedInterests(): ArrayList<String>": { desc: "Returns selected interests as lowercase list", uses: [] }
+},
+"PasswordUtil": {
+  "generateSalt(): String {static}": { desc: "Generates random 16-byte Base64-encoded salt", uses: [] },
+  "hashPassword(password, salt): String {static}": { desc: "Creates SHA-256 hash from password and salt", uses: [] },
+  "verifyPassword(password, storedHash, storedSalt): boolean {static}": { desc: "Verifies plain password against stored hash", uses: [] }
+},
+"PosterGenerator": {
+  "pickColor(tags): int {static}": { desc: "Selects pastel color index based on tags", uses: [] },
+  "getColorForTags(tags): Color {static}": { desc: "Returns poster background color for tags", uses: [] },
+  "getColorForEvent(eventId): Color {static}": { desc: "Returns pastel color by event ID rotation", uses: [] },
+  "getCategoryEmoji(tags): String {static}": { desc: "Returns category emoji for first tag", uses: [] },
+  "generate(title, tags, dateStr, location, xp): String {static}": { desc: "Generates poster PNG file and returns file path", uses: [] },
+  "generateDefault(ev: Event): String {static}": { desc: "Auto-generates poster from Event object", uses: ["Event"] }
+},
+"EmailSender": {
+  "generateCode(): int {static}": { desc: "Generates 6-digit random verification code", uses: ["AppConstants"] },
+  "sendVerificationEmail(toEmail, code): boolean {static}": { desc: "Sends registration verification email", uses: [] },
+  "sendPasswordResetEmail(toEmail, code): boolean {static}": { desc: "Sends password reset verification email", uses: [] },
+  "sendEmail(toEmail, subject, body): boolean {static}": { desc: "Sends email via SMTP (internal helper)", uses: [] }
+},
+"ExperienceSystem": {
+  "getTierName(xp: int): String {static}": { desc: "Delegates to AppConstants to return tier name", uses: ["AppConstants"] },
+  "getTierColor(xp: int): Color {static}": { desc: "Delegates to AppConstants to return tier color", uses: ["AppConstants"] },
+  "getTierIndex(xp: int): int {static}": { desc: "Delegates to AppConstants to return tier index", uses: ["AppConstants"] }
+}
+};
+
+// ==================== CLASS DATA ====================
+const CLASSES = {
+"model": [
+  { name:"Searchable", st:"interface", ext:"", attrs:[], methods:["+ matchesSearch(query: String): boolean","+ getSearchSummary(): String"] },
+  { name:"AttendanceStatus", st:"enum", ext:"", attrs:["GOING, INTERESTED, MAYBE","- displayName: String"], methods:["+ getDisplayName(): String","+ fromString(s: String): AttendanceStatus"] },
+  { name:"User", st:"", ext:"implements Searchable", attrs:["- username: String","- displayName: String","- email: String","- password: String","- salt: String","- bio: String","- verified: boolean","- interests: ArrayList&lt;String&gt;","- following: ArrayList&lt;String&gt;","- followers: ArrayList&lt;String&gt;","- notifications: ArrayList&lt;String&gt;","- attending: ArrayList&lt;Integer&gt;","- xp: int"], methods:["+ User(username, displayName, email, password, salt, bio)","+ User(username, displayName, email, plainPassword, bio)","+ User(username, password)","+ getUsername(): String","+ getDisplayName(): String","+ getEmail(): String","+ getPassword(): String","+ getSalt(): String","+ getBio(): String","+ isVerified(): boolean","+ getInterests(): ArrayList&lt;String&gt;","+ getFollowing(): ArrayList&lt;String&gt;","+ getFollowers(): ArrayList&lt;String&gt;","+ getAttending(): ArrayList&lt;Integer&gt;","+ getNotifications(): ArrayList&lt;String&gt;","+ getXp(): int","+ isClub(): boolean","+ getProfileBadge(): String","+ setUsername(username: String): void","+ setDisplayName(displayName: String): void","+ setEmail(email: String): void","+ setPassword(password: String): void","+ setSalt(salt: String): void","+ setBio(bio: String): void","+ setVerified(verified: boolean): void","+ setInterests(interests: ArrayList&lt;String&gt;): void","+ setFollowing(following: ArrayList&lt;String&gt;): void","+ setFollowers(followers: ArrayList&lt;String&gt;): void","+ setAttending(attending: ArrayList&lt;Integer&gt;): void","+ setNotifications(notifications: ArrayList&lt;String&gt;): void","+ setXp(xp: int): void","+ addInterest(interest: String): void","+ removeInterest(interest: String): void","+ addFollowing(username: String): void","+ removeFollowing(username: String): void","+ addFollower(username: String): void","+ removeFollower(username: String): void","+ addAttending(eventId: int): void","+ removeAttending(eventId: int): void","+ addNotification(message: String): void","+ isFollowing(username: String): boolean","+ checkPassword(plainPassword: String): boolean","+ matchesSearch(query: String): boolean","+ getSearchSummary(): String","+ toString(): String"] },
+  { name:"ClubUser", st:"", ext:"extends User", attrs:[], methods:["+ ClubUser(username, displayName, email, password, salt, bio)","+ ClubUser(username, displayName, email, plainPassword, bio)","+ isClub(): boolean","+ getProfileBadge(): String","+ toString(): String"] },
+  { name:"Event", st:"", ext:"implements Searchable", attrs:["- id: int","- capacity: int","- xpReward: int","- minTierIndex: int","- title: String","- description: String","- location: String","- creatorUsername: String","- imagePath: String","- dateTime: LocalDateTime","- endDateTime: LocalDateTime","- registrationDeadline: LocalDateTime","- tags: ArrayList&lt;String&gt;","- comments: ArrayList&lt;Comment&gt;","- attendanceMap: HashMap&lt;String, AttendanceStatus&gt;","- FMT: DateTimeFormatter"], methods:["+ Event(id, title, desc, location, dateTime, endDateTime, deadline, capacity, creator)","+ Event(id, title, desc, location, dateTime, capacity, creator)","+ getId(): int","+ getTitle(): String","+ getDescription(): String","+ getLocation(): String","+ getDateTime(): LocalDateTime","+ getEndDateTime(): LocalDateTime","+ getRegistrationDeadline(): LocalDateTime","+ getCapacity(): int","+ getCreatorUsername(): String","+ getTags(): ArrayList&lt;String&gt;","+ getComments(): ArrayList&lt;Comment&gt;","+ getAttendanceMap(): HashMap&lt;String, AttendanceStatus&gt;","+ getImagePath(): String","+ getXpReward(): int","+ getMinTierIndex(): int","+ getDateStr(): String","+ getEndDateStr(): String","+ getDeadlineStr(): String","+ getMinTierName(): String","+ getAttendees(): ArrayList&lt;String&gt;","+ getAttendeesByStatus(status: AttendanceStatus): ArrayList&lt;String&gt;","+ getGoingCount(): int","+ getInterestedCount(): int","+ getMaybeCount(): int","+ getAttendeeCount(): int","+ isFull(): boolean","+ isDeadlinePassed(): boolean","+ isEventPast(): boolean","+ canJoin(userXP: int): boolean","+ setId(id: int): void","+ setTitle(title: String): void","+ setDescription(description: String): void","+ setEndDateTime(endDateTime: LocalDateTime): void","+ setRegistrationDeadline(deadline: LocalDateTime): void","+ setTags(tags: ArrayList&lt;String&gt;): void","+ setComments(comments: ArrayList&lt;Comment&gt;): void","+ setAttendanceMap(map: HashMap&lt;String, AttendanceStatus&gt;): void","+ setImagePath(path: String): void","+ setXpReward(xp: int): void","+ setMinTierIndex(idx: int): void","+ setAttendees(attendees: ArrayList&lt;String&gt;): void","+ addTag(tag: String): void","+ setAttendance(u: String, s: AttendanceStatus): void","+ removeAttendance(u: String): void","+ getAttendanceStatus(u: String): AttendanceStatus","+ isAttending(u: String): boolean","+ addAttendee(u: String): void","+ removeAttendee(u: String): void","+ addComment(c: Comment): void","+ matchesSearch(query: String): boolean","+ getSearchSummary(): String","+ toString(): String"] },
+  { name:"Comment", st:"", ext:"", attrs:["- id: int","- parentId: int","- username: String","- text: String","- time: String"], methods:["+ Comment(username, text)","+ Comment(username, text, time)","+ Comment(id, username, text, time, parentId)","+ getId(): int","+ getUsername(): String","+ getText(): String","+ getTime(): String","+ getParentId(): int","+ setId(id: int): void","+ setParentId(parentId: int): void","+ isReply(): boolean","+ toString(): String"] },
+  { name:"Database", st:"", ext:"", attrs:["+ databaseConnection: Connection {static}"], methods:["+ createConnection(): void {static}","- createTables(): void {static}","- migrateAttendeesTable(stmt: Statement): void {static}","- addColumnIfNotExists(stmt, table, col, def): void {static}","+ addToDatabase(user: User): void {static}","+ addToDatabase(event: Event): int {static}","+ addToDatabase(comment: Comment, eventId: int): int {static}","+ deleteFromDatabase(user: User): void {static}","+ deleteFromDatabase(event: Event): void {static}","- exec(sql: String, params: Object...): void {static}","+ setAttendance(eventId, username, status): void {static}","+ removeAttendance(eventId, username): void {static}","+ getAttendanceMap(eventId): HashMap {static}","+ addAttendee(eid, u): void {static}","+ deleteAttendee(eid, u): void {static}","+ getAttendees(eid): ArrayList&lt;String&gt; {static}","+ addFollow(follower, following): void {static}","+ deleteFollow(follower, following): void {static}","+ getFollowers(u): ArrayList&lt;String&gt; {static}","+ getFollowing(u): ArrayList&lt;String&gt; {static}","+ addEventTag(eid, tag): void {static}","+ getEventTags(eid): ArrayList&lt;String&gt; {static}","+ addInterest(u, i): void {static}","+ removeInterest(u, i): void {static}","+ getInterests(u): ArrayList&lt;String&gt; {static}","+ setInterests(u, list): void {static}","+ addNotification(u, msg): void {static}","+ getNotifications(u): ArrayList&lt;String&gt; {static}","+ sendMessage(sender, receiver, text): void {static}","+ getMessages(user1, user2): ArrayList&lt;String[]&gt; {static}","+ getConversationPartners(username): ArrayList&lt;String&gt; {static}","+ getAllUsers(): ArrayList&lt;User&gt; {static}","+ getUserWithUsername(username): User {static}","- buildUser(rs: ResultSet): User {static}","+ updateUserVerified(u, v): void {static}","+ updateUserPassword(u, hash, salt): void {static}","+ updateUserBio(u, bio): void {static}","+ getAllEvents(): ArrayList&lt;Event&gt; {static}","- buildEvent(rs: ResultSet): Event {static}","- parseOptDT(s: String): LocalDateTime {static}","+ getComments(eid): ArrayList&lt;Comment&gt; {static}","+ getPopularEventIds(limit): ArrayList&lt;Integer&gt; {static}","+ getRecommendedEventIds(username, limit): ArrayList&lt;Integer&gt; {static}","+ getLeaderboard(limit): ArrayList&lt;User&gt; {static}","+ getUserXP(u): int {static}","+ addXP(u, amount): void {static}","+ isEmailTaken(email): boolean {static}","+ updateEventImage(eventId, path): void {static}","+ isDatabaseEmpty(): boolean {static}","- qList(sql, col, param): ArrayList&lt;String&gt; {static}"] },
+  { name:"AppConstants", st:"", ext:"", attrs:["+ TEAL, TEAL_DARK, TEAL_LIGHT, ... : Color {static final}","+ F_HERO, F_BIG, F_TITLE, ... : Font {static final}","+ WINDOW_WIDTH, WINDOW_HEIGHT, ... : int {static final}","+ TIER_NAMES, INTEREST_CATEGORIES: String[] {static final}","+ TIER_THRESHOLDS: int[] {static final}","+ TIER_COLORS: Color[] {static final}","+ DB_URL, DB_USER, DB_PASS, ... : String {static final}","- DB_PROPS: Properties {static final}"], methods:["- loadCredentials(): Properties {static}","+ getTierIndex(xp: int): int {static}","+ getTierName(xp: int): String {static}","+ getTierColor(xp: int): Color {static}","+ getNextTierXP(xp: int): int {static}","+ getNextTierName(xp: int): String {static}"] },
+  { name:"SampleData", st:"", ext:"", attrs:[], methods:["+ loadSampleData(): void {static}"] }
+],
+"screens": [
+  { name:"MainFile", st:"", ext:"", attrs:["+ currentUser: User {static}","+ loginScreen: LoginScreen {static}"], methods:["+ main(args: String[]): void {static}"] },
+  { name:"LoginScreen", st:"", ext:"extends JFrame", attrs:["- loginUsername: JTextField","- loginPassword: JPasswordField","- users: ArrayList&lt;User&gt;","- formCardLayout: CardLayout","- formContainer: JPanel","- tabLogin, tabRegister: JButton"], methods:["+ LoginScreen()","+ refreshUsers(): void","- buildUI(): void","- buildBrandPanel(): JPanel","- buildFormPanel(): JPanel","- createTabButton(text, active): JButton","- switchTab(isLogin: boolean): void","- createLoginForm(): JPanel","- createRoundedField(placeholder): JTextField","- createRoundedPasswordField(placeholder): JPasswordField","- handleLogin(): void"] },
+  { name:"RegisterScreen", st:"", ext:"extends JPanel", attrs:["- loginScreen: LoginScreen","- usernameField, emailField, displayNameField: JTextField","- passwordField: JPasswordField","- clubCheckBox: JCheckBox","- verificationCode: int"], methods:["+ RegisterScreen(loginScreen: LoginScreen)","- initComponents(): void","- handleRegister(): void"] },
+  { name:"HomeScreen", st:"", ext:"extends JFrame", attrs:["- cardLayout: CardLayout","- contentPanel: JPanel","- myProfilePanel, viewedProfilePanel: ProfilePanel","- profileStack: Stack&lt;User&gt;"], methods:["+ HomeScreen()","- buildTopBar(): JPanel","- buildSideNav(): JPanel","- buildContent(): JPanel","- showPanel(panel, name): void","+ showFeed(): void","+ showMyProfile(): void","+ navigateToProfile(user: User): void","+ goBackFromProfile(): void","+ showEventDetail(event: Event): void","+ changeAttendance(event, status): void","+ addComment(event, text, parentId): void","+ followUser(target): void","+ unfollowUser(target): void","+ createEvent(event: Event): void","- createNavLink(text, active): JButton","- makeIconBtn(emoji): JButton"] }
+],
+"panels": [
+  { name:"FeedPanel", st:"", ext:"extends JPanel", attrs:["- home: HomeScreen","- gridPanel: JPanel","- currentFilter, currentSort: String"], methods:["+ FeedPanel(home: HomeScreen)","- buildUI(): void","+ refreshGrid(): void","- createCard(ev: Event): JPanel","- createRecRow(ev, interests): JPanel","- createSectionHeader(num, title, sub): JPanel","- createPill(text, active): JButton","- sortEvents(events): void","- getFilteredEvents(): ArrayList&lt;Event&gt;","- loadImage(path): BufferedImage"] },
+  { name:"EventDetailPanel", st:"", ext:"extends JPanel", attrs:["- event: Event","- homeScreen: HomeScreen"], methods:["+ EventDetailPanel(event, homeScreen)","- createBody(): JScrollPane","- createProp(label, value): JPanel","- buildAttendanceSection(): JPanel","- createStatusBtn(text, color, selected): JButton","- buildAttendeesSection(): JPanel","- buildCommentsSection(): JPanel","- createCommentRow(comment, indent): JPanel","- createCommentInput(parentId): JPanel"] },
+  { name:"ProfilePanel", st:"", ext:"extends JPanel", attrs:["- user: User","- home: HomeScreen","- isOtherUser: boolean"], methods:["+ ProfilePanel(user, home, isOtherUser)","- buildUI(): void","- showFollowDialog(followers, following): void"] },
+  { name:"CreateEventPanel", st:"", ext:"extends JPanel", attrs:["- home: HomeScreen","- titleField, locationField, tagsField: JTextField","- descArea: JTextArea","- dayS, monthS, yearS, hourS, minS: JSpinner","- capacitySpin, xpSpin: JSpinner","- tierCombo: JComboBox&lt;String&gt;","- imageLabel: JLabel","- selectedImagePath: String"], methods:["+ CreateEventPanel(home: HomeScreen)","- buildUI(): void","- createDateRow(now, withTime): JPanel","- chooseImage(): void","- handleCreate(): void","- createFieldLabel(text): JLabel"] },
+  { name:"CalendarPanel", st:"", ext:"extends JPanel", attrs:["- home: HomeScreen","- currentMonth: YearMonth","- calGrid: JPanel","- monthLabel: JLabel"], methods:["+ CalendarPanel(home: HomeScreen)","- buildUI(): void","- refreshCal(): void"] },
+  { name:"DiscoverPanel", st:"", ext:"extends JPanel", attrs:["- home: HomeScreen"], methods:["+ DiscoverPanel(home: HomeScreen)","- buildUI(): void","- createEventRow(ev: Event): JPanel"] },
+  { name:"LeaderboardPanel", st:"", ext:"extends JPanel", attrs:["- home: HomeScreen"], methods:["+ LeaderboardPanel(home: HomeScreen)","- buildUI(): void","- createRow(rank, u): JPanel"] },
+  { name:"MessagingPanel", st:"", ext:"extends JPanel", attrs:["- home: HomeScreen","- chatPanel: JPanel","- msgField: JTextField","- selectedUser: String","- convList: JPanel"], methods:["+ MessagingPanel(home: HomeScreen)","- buildUI(): void","- refreshConversations(): void","- loadChat(): void","- sendMessage(): void","- newConversation(): void"] },
+  { name:"NotificationsPanel", st:"", ext:"extends JPanel", attrs:[], methods:["+ NotificationsPanel(home: HomeScreen)"] },
+  { name:"SearchPanel", st:"", ext:"extends JPanel", attrs:["- home: HomeScreen","- searchField: JTextField","- resultsPanel: JPanel"], methods:["+ SearchPanel(home: HomeScreen)","+ searchFor(query: String): void","- buildUI(): void","- performSearch(): void"] },
+  { name:"UIHelper", st:"", ext:"", attrs:[], methods:["+ createButton(text, bg, fg): JButton {static}","+ createOutlineButton(text, color): JButton {static}","+ createTagButton(text, color, selected): JButton {static}","+ createLabel(text): JLabel {static}","+ createSmallLabel(text): JLabel {static}","+ createSectionLabel(text): JLabel {static}","+ createPageTitle(text): JLabel {static}","+ createSubtitle(text): JLabel {static}","+ createBadgeLabel(text, bg, fg): JLabel {static}","+ createStyledField(): JTextField {static}","+ createStyledPasswordField(): JPasswordField {static}","+ createPlaceholderField(placeholder): JTextField {static}","+ getFieldText(field, placeholder): String {static}","+ createCard(): JPanel {static}","+ showError(parent, message): void {static}","+ showSuccess(parent, message): void {static}","+ showConfirm(parent, message): boolean {static}","+ createAvatar(letter, color, size): JPanel {static}","+ createClickableUsername(user, homeScreen): JLabel {static}","+ createFullWidthGBC(): GridBagConstraints {static}","+ createSeparator(): JSeparator {static}","+ createFieldLabel(text): JLabel {static}","+ createPagePanel(): JPanel {static}","+ wrapInScroll(content): JScrollPane {static}"] },
+  { name:"ForgotPasswordDialog", st:"", ext:"extends JDialog", attrs:["- emailField, codeField: JTextField","- newPasswordField, confirmPasswordField: JPasswordField","- btnSendCode, btnReset: JButton","- codePanel: JPanel","- verificationCode: int","- targetEmail, targetUsername: String"], methods:["+ ForgotPasswordDialog(parent: Window)","- createHeader(): JPanel","- createForm(): JPanel","- handleSendCode(): void","- handleReset(): void","- findUsernameByEmail(email): String"] },
+  { name:"InterestSelectionDialog", st:"", ext:"extends JDialog", attrs:["- confirmed: boolean","- checkBoxes: ArrayList&lt;JCheckBox&gt;"], methods:["+ InterestSelectionDialog(owner, currentInterests)","- buildUI(current: ArrayList&lt;String&gt;): void","+ isConfirmed(): boolean","+ getSelectedInterests(): ArrayList&lt;String&gt;"] }
+],
+"tools": [
+  { name:"PasswordUtil", st:"", ext:"", attrs:["- random: SecureRandom {static final}"], methods:["+ generateSalt(): String {static}","+ hashPassword(password, salt): String {static}","+ verifyPassword(password, storedHash, storedSalt): boolean {static}"] },
+  { name:"PosterGenerator", st:"", ext:"", attrs:["- WIDTH, HEIGHT: int {static final}","- rand: Random {static final}","- PASTELS: Color[] {static final}"], methods:["- pickColor(tags): int {static}","+ getColorForTags(tags): Color {static}","+ getColorForEvent(eventId): Color {static}","+ getCategoryEmoji(tags): String {static}","+ generate(title, tags, dateStr, location, xp): String {static}","+ generateDefault(ev: Event): String {static}"] },
+  { name:"EmailSender", st:"", ext:"", attrs:["- SENDER_EMAIL, SENDER_PASSWORD, SMTP_HOST: String {static}","- SMTP_PORT: int {static}","- random: Random {static final}"], methods:["+ generateCode(): int {static}","+ sendVerificationEmail(toEmail, code): boolean {static}","+ sendPasswordResetEmail(toEmail, code): boolean {static}","- sendEmail(toEmail, subject, body): boolean {static}"] },
+  { name:"ExperienceSystem", st:"", ext:"", attrs:[], methods:["+ getTierName(xp: int): String {static}","+ getTierColor(xp: int): Color {static}","+ getTierIndex(xp: int): int {static}"] }
+]
+};
+
+// ==================== RENDER ====================
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+function findTip(className, methodText) {
+  const ct = TIPS[className];
+  if(!ct) return null;
+  // strip leading "+ " or "- "
+  const clean = methodText.replace(/^[+\-]\s*/,'');
+  for(const key in ct) {
+    // try exact or stripped match
+    const ck = key.replace(/^[+\-]\s*/,'');
+    if(clean === ck || clean === key || methodText === key || methodText.trim() === key.trim()) return ct[key];
+    // fuzzy: match method name before first (
+    const mName = clean.split('(')[0];
+    const kName = ck.split('(')[0];
+    if(mName && kName && mName === kName) return ct[key];
+  }
+  return null;
+}
+
+function render() {
+  const app = document.getElementById('app');
+  let html = '';
+  const pkgNames = {model:'model (9 classes)', screens:'screens (4 classes)', panels:'panels (13 classes)', tools:'tools (4 classes)'};
+  for(const pkg in CLASSES) {
+    html += '<div class="pkg">';
+    html += '<div class="pkg-title" onclick="togglePkg(this)"><span>'+pkgNames[pkg]+'</span><span class="arrow">&#9660;</span></div>';
+    html += '<div class="pkg-body"><div class="grid">';
+    for(const cls of CLASSES[pkg]) {
+      const label = (cls.st ? '&laquo;'+cls.st+'&raquo; ':'')+cls.name+(cls.ext?' <span class="ext">'+cls.ext+'</span>':'');
+      html += '<div class="card">';
+      html += '<div class="card-head" onclick="toggleCard(this)">'+label+' <span class="toggle">&#9660;</span></div>';
+      html += '<div class="card-body">';
+      if(cls.attrs.length) {
+        html += '<div class="section-bar" onclick="toggleSection(this)"><span>Fields ('+cls.attrs.length+')</span><span>&#9660;</span></div>';
+        html += '<div class="section-content">';
+        for(const a of cls.attrs) html += '<div class="line attr-line">'+a+'</div>';
+        html += '</div>';
+      }
+      if(cls.methods.length) {
+        html += '<div class="section-bar" onclick="toggleSection(this)"><span>Methods ('+cls.methods.length+')</span><span>&#9660;</span></div>';
+        html += '<div class="section-content">';
+        for(const m of cls.methods) {
+          const plainM = m.replace(/&lt;/g,'<').replace(/&gt;/g,'>');
+          const tip = findTip(cls.name, plainM);
+          html += '<div class="line method-line" data-cls="'+esc(cls.name)+'" onclick="toggleTip(this)">'+m+'</div>';
+          if(tip) {
+            let tipHtml = '<div class="tip"><div class="tip-line">'+esc(tip.desc)+'</div>';
+            if(tip.uses.length) {
+              tipHtml += '<div class="tip-uses-line">Uses: ';
+              for(const u of tip.uses) tipHtml += '<span>'+esc(u)+'</span> ';
+              tipHtml += '</div>';
+            }
+            tipHtml += '</div>';
+            html += tipHtml;
+          }
+        }
+        html += '</div>';
+      }
+      if(!cls.attrs.length && !cls.methods.length) html += '<div class="sep2"></div>';
+      html += '</div></div>';
+    }
+    html += '</div></div></div>';
+  }
+  app.innerHTML = html;
+}
+
+function togglePkg(el) {
+  const body = el.nextElementSibling;
+  const arrow = el.querySelector('.arrow');
+  body.classList.toggle('hidden');
+  arrow.classList.toggle('closed');
+}
+function toggleCard(el) {
+  const body = el.nextElementSibling;
+  const toggle = el.querySelector('.toggle');
+  body.classList.toggle('hidden');
+  toggle.classList.toggle('closed');
+}
+function toggleSection(el) {
+  const content = el.nextElementSibling;
+  content.classList.toggle('hidden');
+  const arrow = el.querySelector('span:last-child');
+  arrow.textContent = content.classList.contains('hidden') ? '\u25B6' : '\u25BC';
+}
+function toggleTip(el) {
+  const tip = el.nextElementSibling;
+  if(!tip || !tip.classList.contains('tip')) return;
+  // close other open tips
+  document.querySelectorAll('.tip.show').forEach(t => { if(t!==tip) t.classList.remove('show'); t.previousElementSibling.classList.remove('active'); });
+  tip.classList.toggle('show');
+  el.classList.toggle('active');
+}
+
+render();
+</script>
 </body>
 </html>
