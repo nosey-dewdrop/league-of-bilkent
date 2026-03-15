@@ -297,6 +297,5 @@ public class SampleData {
         Database.addNotification("ege", "emir_selim started following you!");
         Database.addNotification("emir_selim", "bosman started following you!");
 
-        System.out.println("Sample data loaded!");
     }
 }

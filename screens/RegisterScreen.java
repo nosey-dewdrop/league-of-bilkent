@@ -105,7 +105,7 @@ public class RegisterScreen extends JPanel {
         try {
             emailSent = EmailSender.sendVerificationEmail(email, verificationCode);
         } catch (Exception ex) {
-            System.err.println("Email error: " + ex.getMessage());
+            // Email sending failed, will use fallback
         }
 
         String input;

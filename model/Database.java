@@ -75,11 +75,10 @@ public class Database {
             databaseConnection = DriverManager.getConnection(
                 dbUrl, dbUser, dbPass);
             createTables();
-            System.out.println("MySQL connection complete");
         } catch (SQLException e) {
-            System.out.println("MySQL connection error!"); e.printStackTrace();
+            e.printStackTrace();
         } catch (ClassNotFoundException e) {
-            System.out.println("MySQL JDBC driver not found!"); e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
@@ -144,7 +143,6 @@ public class Database {
             if (rs.next()) {
                 stmt.executeUpdate("INSERT IGNORE INTO attendance (event_id, username, status) " +
                     "SELECT event_id, username, 'GOING' FROM attendees");
-                System.out.println("attendees -> attendance migration done");
             }
         } catch (SQLException ignored) {}
     }
@@ -154,7 +152,6 @@ public class Database {
             ResultSet rs = databaseConnection.getMetaData().getColumns(null, null, table, col);
             if (!rs.next()) {
                 stmt.executeUpdate("ALTER TABLE " + table + " ADD COLUMN " + col + " " + def);
-                System.out.println("Added column " + col + " to " + table);
             }
         } catch (SQLException ignored) {}
     }

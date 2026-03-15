@@ -42,7 +42,6 @@ public class EmailSender {
             SMTP_HOST = creds.getProperty("email.smtp.host", "smtp.gmail.com");
             SMTP_PORT = Integer.parseInt(creds.getProperty("email.smtp.port", "587"));
         } catch (Exception e) {
-            System.out.println("[EmailSender] credentials.properties not found - email disabled");
             SENDER_EMAIL = "";
             SENDER_PASSWORD = "";
             SMTP_HOST = "smtp.gmail.com";
@@ -73,7 +72,6 @@ public class EmailSender {
 
     private static boolean sendEmail(String toEmail, String subject, String body) {
         if (SENDER_EMAIL.isEmpty() || SENDER_PASSWORD.isEmpty()) {
-            System.out.println("[EmailSender] No credentials - email disabled");
             return false;
         }
 
@@ -97,10 +95,8 @@ public class EmailSender {
             message.setSubject(subject);
             message.setText(body);
             Transport.send(message);
-            System.out.println("Email sent: " + toEmail);
             return true;
         } catch (Exception e) {
-            System.err.println("Email failed: " + e.getMessage());
             return false;
         }
     }

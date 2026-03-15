@@ -25,7 +25,7 @@ public class Comment {
     private String username;
     private String text;
     private String time;
-    private int parentId;  // 0 = ust seviye yorum, >0 = yanit
+    private int parentId;  // 0 = top-level comment, >0 = reply
 
     public Comment(String username, String text) {
         this.id = 0;

@@ -28,7 +28,7 @@ public class MainFile {
 
     public static void main(String[] args) {
         try {
-            // Modern gorunum icin system look & feel
+            // Use system look & feel for modern appearance
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
             // Anti-aliased text

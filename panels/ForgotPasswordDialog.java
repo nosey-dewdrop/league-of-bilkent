@@ -69,7 +69,7 @@ public class ForgotPasswordDialog extends JDialog {
         form.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
         GridBagConstraints gc = UIHelper.createFullWidthGBC();
 
-        // Email alani
+        // Email field
         gc.gridy = 0; form.add(UIHelper.createLabel("Bilkent Email Address"), gc);
         emailField = UIHelper.createStyledField();
         gc.gridy = 1; form.add(emailField, gc);
@@ -78,7 +78,7 @@ public class ForgotPasswordDialog extends JDialog {
         gc.gridy = 2; gc.insets = new Insets(10, 0, 10, 0);
         form.add(btnSendCode, gc);
 
-        // Kod + yeni sifre alani (baslangicta gizli)
+        // Code + new password fields (initially hidden)
         codePanel = new JPanel(new GridBagLayout());
         codePanel.setBackground(Color.WHITE);
         codePanel.setVisible(false);
@@ -122,7 +122,7 @@ public class ForgotPasswordDialog extends JDialog {
             return;
         }
 
-        // Kullaniciyi bul
+        // Find user by email
         User user = Database.getUserWithUsername(findUsernameByEmail(email));
         if (user == null) {
             UIHelper.showError(this, "No account found with this email!");
@@ -135,7 +135,6 @@ public class ForgotPasswordDialog extends JDialog {
 
         boolean sent = EmailSender.sendPasswordResetEmail(email, verificationCode);
         if (!sent) {
-            System.out.println("[EMAIL FALLBACK] Password reset code: " + verificationCode);
             JOptionPane.showMessageDialog(this,
                 "Email failed. Console code: " + verificationCode,
                 "Email Error", JOptionPane.WARNING_MESSAGE);
@@ -167,7 +166,7 @@ public class ForgotPasswordDialog extends JDialog {
             return;
         }
 
-        // Sifre guncelle (hash + salt)
+        // Update password (hash + salt)
         String salt = PasswordUtil.generateSalt();
         String hashed = PasswordUtil.hashPassword(newPass, salt);
         Database.updateUserPassword(targetUsername, hashed, salt);

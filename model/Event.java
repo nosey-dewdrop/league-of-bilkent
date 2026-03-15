@@ -17,13 +17,13 @@ import java.util.HashMap;
  * │ - imagePath, xpReward, minTierIndex                               │
  * ├────────────────────────────────────────────────────────────────────┤
  * │ + Event(id,title,desc,loc,dateTime,endDT,deadline,cap,creator)    │
- * │ + Event(id,title,desc,loc,dateTime,cap,creator) -> kisa form     │
- * │ + getDateStr/getEndDateStr/getDeadlineStr -> format'li tarihler  │
- * │ + getGoingCount/getInterestedCount/getMaybeCount -> sayaçlar     │
- * │ + isFull/isDeadlinePassed/isEventPast -> durum kontrolleri       │
- * │ + canJoin(userXP): boolean -> tier kontrolu                      │
- * │ + setAttendance/removeAttendance -> katilim yonetimi             │
- * │ + addComment/addTag -> icerik ekleme                              │
+ * │ + Event(id,title,desc,loc,dateTime,cap,creator) -> short form     │
+ * │ + getDateStr/getEndDateStr/getDeadlineStr -> formatted dates     │
+ * │ + getGoingCount/getInterestedCount/getMaybeCount -> counters     │
+ * │ + isFull/isDeadlinePassed/isEventPast -> status checks           │
+ * │ + canJoin(userXP): boolean -> tier check                         │
+ * │ + setAttendance/removeAttendance -> attendance management        │
+ * │ + addComment/addTag -> content addition                           │
  * │ + matchesSearch/getSearchSummary -> Searchable interface          │
  * ├────────────────────────────────────────────────────────────────────┤
  * │ IMPLEMENTS:  Searchable (matchesSearch, getSearchSummary)          │
@@ -48,7 +48,7 @@ public class Event implements Searchable {
     private ArrayList<Comment> comments;
     private HashMap<String, AttendanceStatus> attendanceMap;
 
-    // NEW fields
+    // Additional fields
     private String imagePath;      // poster image file path
     private int xpReward;          // XP given to attendees
     private int minTierIndex;      // minimum tier required (0=anyone)
