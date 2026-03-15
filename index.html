@@ -6,49 +6,49 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'JetBrains Mono',monospace;background:#fff;color:#000;padding:24px;font-size:11px;line-height:1.4}
+body{font-family:'JetBrains Mono',monospace;background:#fff;color:#000;padding:24px;font-size:11px;line-height:1.3}
 h1{font-size:16px;font-weight:700;text-align:center;margin-bottom:4px;text-transform:uppercase;letter-spacing:2px}
-.sub{text-align:center;font-size:10px;color:#666;margin-bottom:32px}
+.sub{text-align:center;font-size:10px;color:#666;margin-bottom:24px}
 
 /* RELATIONSHIPS */
-.rel-box{border:2px solid #000;padding:12px;margin-bottom:32px}
-.rel-box h2{font-size:13px;font-weight:700;margin-bottom:8px;text-transform:uppercase}
-.rel-line{line-height:1.8}
+.rel-box{border:2px solid #000;padding:10px;margin-bottom:20px}
+.rel-box h2{font-size:12px;font-weight:700;margin-bottom:6px;text-transform:uppercase}
+.rel-line{line-height:1.6;font-size:11px}
 
-/* PACKAGE TOGGLE */
-.pkg{margin-bottom:24px;border:2px solid #000}
-.pkg-title{font-size:13px;font-weight:700;padding:8px 12px;background:#000;color:#fff;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none}
-.pkg-title:hover{background:#222}
-.pkg-title .arrow{transition:transform .2s}
-.pkg-title .arrow.closed{transform:rotate(-90deg)}
-.pkg-title .count{font-weight:400;font-size:10px;opacity:.7}
-.pkg-body{padding:12px}
-.pkg-body.hidden{display:none}
+/* NAV TABS */
+.pkg-nav{display:flex;border-bottom:3px solid #000;margin-bottom:16px;position:sticky;top:0;background:#fff;z-index:10}
+.pkg-nav-btn{padding:7px 20px;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;background:#eee;border:2px solid #000;border-bottom:none;margin-bottom:-3px;text-transform:uppercase;letter-spacing:1px;user-select:none;transition:background .1s}
+.pkg-nav-btn:hover{background:#ddd}
+.pkg-nav-btn.active{background:#000;color:#fff}
+.pkg-nav-btn .nav-count{font-weight:400;font-size:9px;opacity:.6;margin-left:4px}
+
+/* PAGE */
+.pkg-page{display:none}
+.pkg-page.active{display:block}
 
 /* CARD GRID */
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:10px}
 
 /* CLASS CARD */
 .card{border:2px solid #000;overflow:hidden}
-.card-head{background:#333;color:#fff;padding:6px 10px;font-weight:700;font-size:12px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none}
+.card-head{background:#333;color:#fff;padding:5px 8px;font-weight:700;font-size:12px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none}
 .card-head:hover{background:#444}
 .card-head .ext{font-weight:400;font-size:10px;color:#aaa}
-.card-head .toggle{font-size:14px;transition:transform .2s}
-.card-head .toggle.closed{transform:rotate(0deg)}
+.card-head .toggle{font-size:12px}
 .card-body{display:block}
 .card-body.hidden{display:none}
 
 /* FIELDS & METHODS */
-.section-bar{padding:4px 10px;background:#eee;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #000;user-select:none}
+.section-bar{padding:3px 8px;background:#eee;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #000;user-select:none}
 .section-bar:hover{background:#ddd}
-.section-content{padding:4px 10px}
+.section-content{padding:2px 8px}
 .section-content.hidden{display:none}
-.line{white-space:normal;word-break:break-word;padding:2px 0;cursor:pointer;border-radius:2px;padding-left:4px;margin:1px 0}
+.line{white-space:normal;word-break:break-word;padding:1px 0;cursor:pointer;padding-left:4px;margin:0;font-size:11px;line-height:1.4}
 .line:hover{background:#f0f0f0}
 .line.active{background:#f0f0f0}
 
 /* TOOLTIP */
-.tip{display:none;margin:2px 0 4px 0;padding:0 0 0 20px;font-size:10px;line-height:1.6;color:#555}
+.tip{display:none;margin:1px 0 3px 0;padding:1px 0 1px 16px;font-size:10px;line-height:1.4;color:#555}
 .tip.show{display:block}
 .tip .tip-line{white-space:normal;word-break:break-word}
 .tip .tip-line::before{content:'> ';color:#999}
@@ -58,6 +58,7 @@ h1{font-size:16px;font-weight:700;text-align:center;margin-bottom:4px;text-trans
 
 .sep2{height:0;border-top:2px solid #000}
 @media print{body{padding:8px;font-size:10px}.grid{grid-template-columns:1fr 1fr}.card{break-inside:avoid}}
+@media(max-width:500px){.grid{grid-template-columns:1fr}.pkg-nav-btn{padding:6px 12px;font-size:10px}}
 </style>
 </head>
 <body>
@@ -80,7 +81,8 @@ h1{font-size:16px;font-weight:700;text-align:center;margin-bottom:4px;text-trans
 <div class="rel-line">AppConstants ···→ all classes (utility dependency)</div>
 </div>
 
-<div id="app"></div>
+<div class="pkg-nav" id="nav"></div>
+<div id="pages"></div>
 
 <script>
 // ==================== DATA ====================
@@ -515,14 +517,30 @@ function findTip(className, methodText) {
   return null;
 }
 
-function render() {
-  const app = document.getElementById('app');
+const PKG_META = {
+  model:   { label:'model',   count:9  },
+  screens: { label:'screens', count:4  },
+  panels:  { label:'panels',  count:13 },
+  tools:   { label:'tools',   count:4  }
+};
+let activePkg = 'model';
+
+function buildNav() {
+  const nav = document.getElementById('nav');
+  let h = '';
+  for(const pkg in PKG_META) {
+    const m = PKG_META[pkg];
+    h += '<div class="pkg-nav-btn'+(pkg===activePkg?' active':'')+'" data-pkg="'+pkg+'" onclick="switchPkg(\''+pkg+'\')">'+m.label+'<span class="nav-count">'+m.count+'</span></div>';
+  }
+  nav.innerHTML = h;
+}
+
+function buildPages() {
+  const pages = document.getElementById('pages');
   let html = '';
-  const pkgNames = {model:'model (9 classes)', screens:'screens (4 classes)', panels:'panels (13 classes)', tools:'tools (4 classes)'};
   for(const pkg in CLASSES) {
-    html += '<div class="pkg">';
-    html += '<div class="pkg-title" onclick="togglePkg(this)"><span>'+pkgNames[pkg]+'</span><span class="arrow">&#9660;</span></div>';
-    html += '<div class="pkg-body"><div class="grid">';
+    html += '<div class="pkg-page'+(pkg===activePkg?' active':'')+'" id="page-'+pkg+'">';
+    html += '<div class="grid">';
     for(const cls of CLASSES[pkg]) {
       const label = (cls.st ? '&laquo;'+cls.st+'&raquo; ':'')+cls.name+(cls.ext?' <span class="ext">'+cls.ext+'</span>':'');
       html += '<div class="card">';
@@ -531,7 +549,7 @@ function render() {
       if(cls.attrs.length) {
         html += '<div class="section-bar" onclick="toggleSection(this)"><span>Fields ('+cls.attrs.length+')</span><span>&#9660;</span></div>';
         html += '<div class="section-content">';
-        for(const a of cls.attrs) html += '<div class="line attr-line">'+a+'</div>';
+        for(const a of cls.attrs) html += '<div class="line">'+a+'</div>';
         html += '</div>';
       }
       if(cls.methods.length) {
@@ -540,16 +558,16 @@ function render() {
         for(const m of cls.methods) {
           const plainM = m.replace(/&lt;/g,'<').replace(/&gt;/g,'>');
           const tip = findTip(cls.name, plainM);
-          html += '<div class="line method-line" data-cls="'+esc(cls.name)+'" onclick="toggleTip(this)">'+m+'</div>';
+          html += '<div class="line method-line" onclick="toggleTip(this)">'+m+'</div>';
           if(tip) {
-            let tipHtml = '<div class="tip"><div class="tip-line">'+esc(tip.desc)+'</div>';
+            let t = '<div class="tip"><div class="tip-line">'+esc(tip.desc)+'</div>';
             if(tip.uses.length) {
-              tipHtml += '<div class="tip-uses-line">Uses: ';
-              for(const u of tip.uses) tipHtml += '<span>'+esc(u)+'</span> ';
-              tipHtml += '</div>';
+              t += '<div class="tip-uses-line">Uses: ';
+              for(const u of tip.uses) t += '<span>'+esc(u)+'</span> ';
+              t += '</div>';
             }
-            tipHtml += '</div>';
-            html += tipHtml;
+            t += '</div>';
+            html += t;
           }
         }
         html += '</div>';
@@ -557,28 +575,39 @@ function render() {
       if(!cls.attrs.length && !cls.methods.length) html += '<div class="sep2"></div>';
       html += '</div></div>';
     }
-    html += '</div></div></div>';
+    html += '</div>';
+    // bottom nav
+    html += '<div class="pkg-nav" style="margin-top:24px;position:static">';
+    for(const p in PKG_META) {
+      const m = PKG_META[p];
+      html += '<div class="pkg-nav-btn'+(p===pkg?' active':'')+'" onclick="switchPkg(\''+p+'\')">'+m.label+'<span class="nav-count">'+m.count+'</span></div>';
+    }
+    html += '</div>';
+    html += '</div>';
   }
-  app.innerHTML = html;
+  pages.innerHTML = html;
 }
 
-function togglePkg(el) {
-  const body = el.nextElementSibling;
-  const arrow = el.querySelector('.arrow');
-  body.classList.toggle('hidden');
-  arrow.classList.toggle('closed');
+function switchPkg(pkg) {
+  activePkg = pkg;
+  document.querySelectorAll('.pkg-nav-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.pkg === pkg || b.textContent.toLowerCase().startsWith(pkg));
+  });
+  document.querySelectorAll('.pkg-page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-'+pkg).classList.add('active');
+  window.scrollTo({top: document.getElementById('nav').offsetTop - 8, behavior:'smooth'});
 }
+
 function toggleCard(el) {
   const body = el.nextElementSibling;
   const toggle = el.querySelector('.toggle');
   body.classList.toggle('hidden');
-  toggle.classList.toggle('closed');
+  toggle.textContent = body.classList.contains('hidden') ? '\u25B6' : '\u25BC';
 }
 function toggleSection(el) {
   const content = el.nextElementSibling;
   content.classList.toggle('hidden');
-  const arrow = el.querySelector('span:last-child');
-  arrow.textContent = content.classList.contains('hidden') ? '\u25B6' : '\u25BC';
+  el.querySelector('span:last-child').textContent = content.classList.contains('hidden') ? '\u25B6' : '\u25BC';
 }
 function toggleTip(el) {
   const tip = el.nextElementSibling;
@@ -587,7 +616,8 @@ function toggleTip(el) {
   el.classList.toggle('active');
 }
 
-render();
+buildNav();
+buildPages();
 </script>
 </body>
 </html>
