@@ -5,3 +5,4 @@
 posters/
 credentials.properties
 build/
+.claude/
