@@ -1,26 +1,9 @@
 package screens;
 
 import model.*;
-import panels.*;
 import tools.*;
 import javax.swing.*;
 
-/*
- * ┌──────────────────────────────────────────────────────────────┐
- * │                   <<class>> MainFile                         │
- * │                Application entry point                       │
- * ├──────────────────────────────────────────────────────────────┤
- * │ + currentUser: User (static) -> currently logged-in user     │
- * │ + loginScreen: LoginScreen (static) -> login window ref      │
- * ├──────────────────────────────────────────────────────────────┤
- * │ + main(args) -> sets L&F, connects DB, loads sample data     │
- * │   if empty, then shows LoginScreen                           │
- * ├──────────────────────────────────────────────────────────────┤
- * │ USES:    Database, SampleData, LoginScreen                   │
- * │ USED BY: HomeScreen (logout), LoginScreen (login success),   │
- * │          all panels (MainFile.currentUser)                    │
- * └──────────────────────────────────────────────────────────────┘
- */
 public class MainFile {
 
     public static User currentUser;
@@ -28,23 +11,42 @@ public class MainFile {
 
     public static void main(String[] args) {
         try {
-            // Use system look & feel for modern appearance
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-
-            // Anti-aliased text
             System.setProperty("awt.useSystemAAFontSettings", "on");
             System.setProperty("swing.aatext", "true");
         } catch (Exception ignored) {}
 
-        Database.createConnection();
+        NetworkManager.isClientMode = true;
 
-        if (Database.isDatabaseEmpty()) {
+        if (NetworkManager.isClientMode) {
+            NetworkManager.startDiscovery();
+            try { Thread.sleep(2500); } catch (Exception ignored) {}
+            if (!NetworkManager.discoveredHosts.isEmpty()) {
+                String ip = NetworkManager.discoveredHosts.get(0).ip;
+                Database.customDbUrl = "jdbc:mysql://" + ip + ":3306/league_of_bilkent?createDatabaseIfNotExist=true";
+            }
+        } else {
+            NetworkManager.startBroadcasting();
+        }
+
+        Database.createConnection();
+        if (Database.isDatabaseEmpty() && Database.customDbUrl == null) {
             SampleData.loadSampleData();
         }
+
+        NetworkManager.onHostFound = () -> {
+            if (Database.customDbUrl == null && !NetworkManager.discoveredHosts.isEmpty()) {
+                String ip = NetworkManager.discoveredHosts.get(0).ip;
+                Database.customDbUrl = "jdbc:mysql://" + ip + ":3306/league_of_bilkent?createDatabaseIfNotExist=true";
+                Database.createConnection();
+                if (loginScreen != null) loginScreen.refreshUsers();
+            }
+        };
 
         SwingUtilities.invokeLater(() -> {
             loginScreen = new LoginScreen();
             loginScreen.setVisible(true);
+            loginScreen.refreshUsers();
         });
     }
 }

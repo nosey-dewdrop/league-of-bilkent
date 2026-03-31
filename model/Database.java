@@ -59,10 +59,12 @@ public class Database {
 
     public static Connection databaseConnection;
 
+    public static String customDbUrl = null;
+
     public static void createConnection() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            String dbUrl = AppConstants.DB_URL;
+            String dbUrl = customDbUrl != null ? customDbUrl : AppConstants.DB_URL;
             String dbUser = AppConstants.DB_USER;
             String dbPass = AppConstants.DB_PASS;
             try {
@@ -355,7 +357,7 @@ public class Database {
         ArrayList<String> partners = new ArrayList<>();
         try {
             PreparedStatement ps = databaseConnection.prepareStatement(
-                "SELECT DISTINCT CASE WHEN sender=? THEN receiver ELSE sender END as partner " +
+                "SELECT CASE WHEN sender=? THEN receiver ELSE sender END as partner " +
                 "FROM messages WHERE sender=? OR receiver=? ORDER BY msg_id DESC");
             ps.setString(1, username); ps.setString(2, username); ps.setString(3, username);
             ResultSet rs = ps.executeQuery();
@@ -566,5 +568,56 @@ public class Database {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) list.add(rs.getString(col)); } catch (SQLException e) { e.printStackTrace(); }
         return list;
+    }
+
+    public static int getDbStateHash() {
+        if(databaseConnection == null) return -1;
+        try {
+            ResultSet rs = databaseConnection.prepareStatement(
+                "SELECT (" +
+                "(SELECT COUNT(*) FROM users) + " +
+                "(SELECT COUNT(*) FROM events) + " +
+                "(SELECT COUNT(*) FROM comments) + " +
+                "(SELECT COUNT(*) FROM attendance) + " +
+                "(SELECT COUNT(*) FROM follows) + " +
+                "(SELECT COUNT(*) FROM messages) + " +
+                "(SELECT IFNULL(SUM(is_read), 0) FROM messages)) "
+            ).executeQuery();
+            if(rs.next()) return rs.getInt(1);
+        } catch(SQLException ignored){}
+        return -1;
+    }
+
+    public static int getUnreadMessageCount(String receiver) {
+        if (databaseConnection == null) return 0;
+        try {
+            PreparedStatement ps = databaseConnection.prepareStatement("SELECT COUNT(*) FROM messages WHERE receiver = ? AND is_read = 0");
+            ps.setString(1, receiver);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) return rs.getInt(1);
+        } catch(SQLException ignored){}
+        return 0;
+    }
+
+    public static int getUnreadCountFromUser(String receiver, String sender) {
+        if (databaseConnection == null) return 0;
+        try {
+            PreparedStatement ps = databaseConnection.prepareStatement("SELECT COUNT(*) FROM messages WHERE receiver = ? AND sender = ? AND is_read = 0");
+            ps.setString(1, receiver);
+            ps.setString(2, sender);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) return rs.getInt(1);
+        } catch(SQLException ignored){}
+        return 0;
+    }
+
+    public static void markMessagesAsRead(String receiver, String sender) {
+        if (databaseConnection == null) return;
+        try {
+            PreparedStatement ps = databaseConnection.prepareStatement("UPDATE messages SET is_read = 1 WHERE receiver = ? AND sender = ?");
+            ps.setString(1, receiver);
+            ps.setString(2, sender);
+            ps.executeUpdate();
+        } catch(SQLException ignored){}
     }
 }

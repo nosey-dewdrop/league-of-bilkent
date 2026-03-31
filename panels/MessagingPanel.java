@@ -3,31 +3,10 @@ package panels;
 import model.*;
 import screens.*;
 import tools.*;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-/*
- * ┌──────────────────────────────────────────────────────────────┐
- * │                <<class>> MessagingPanel                      │
- * │                   extends JPanel                             │
- * │        Direct messaging with conversation list + chat       │
- * ├──────────────────────────────────────────────────────────────┤
- * │ - home: HomeScreen                                           │
- * │ - chatPanel, msgField, selectedUser, convList                │
- * ├──────────────────────────────────────────────────────────────┤
- * │ - buildUI() -> split layout: conv list (left) + chat (right)│
- * │ - refreshConversations() -> reloads conversation list       │
- * │ - loadChat() -> loads messages with selected user           │
- * │ - sendMessage() -> sends message and refreshes chat         │
- * │ - newConversation() -> prompts for username to message      │
- * ├──────────────────────────────────────────────────────────────┤
- * │ USES:    HomeScreen, Database, MainFile, UIHelper,           │
- * │          AppConstants, User                                  │
- * │ USED BY: HomeScreen (messages nav link)                     │
- * └──────────────────────────────────────────────────────────────┘
- */
 public class MessagingPanel extends JPanel {
 
     private HomeScreen home;
@@ -43,8 +22,19 @@ public class MessagingPanel extends JPanel {
         buildUI();
     }
 
+    public String getSelectedUser() {
+        return selectedUser;
+    }
+
+    public void setSelectedUser(String user) {
+        this.selectedUser = user;
+        if(user != null) {
+            refreshConversations();
+            loadChat();
+        }
+    }
+
     private void buildUI() {
-        // Left: conversation list
         JPanel left = new JPanel();
         left.setLayout(new BoxLayout(left, BoxLayout.Y_AXIS));
         left.setBackground(new Color(0xFB, 0xFB, 0xFA));
@@ -56,7 +46,6 @@ public class MessagingPanel extends JPanel {
         title.setBorder(BorderFactory.createEmptyBorder(16, 8, 8, 8));
         left.add(title);
 
-        // New conversation button
         JButton btnNew = new JButton("+ New Message");
         btnNew.setFont(AppConstants.F_SMALL);
         btnNew.setBorderPainted(false);
@@ -77,7 +66,6 @@ public class MessagingPanel extends JPanel {
 
         add(left, BorderLayout.WEST);
 
-        // Right: chat area
         JPanel right = new JPanel(new BorderLayout());
         right.setBackground(Color.WHITE);
         right.setBorder(BorderFactory.createEmptyBorder(16, 16, 16, 16));
@@ -90,7 +78,6 @@ public class MessagingPanel extends JPanel {
         chatScroll.getVerticalScrollBar().setUnitIncrement(16);
         right.add(chatScroll, BorderLayout.CENTER);
 
-        // Input
         JPanel inputRow = new JPanel(new BorderLayout(4, 0));
         inputRow.setBackground(Color.WHITE);
         inputRow.setBorder(BorderFactory.createEmptyBorder(8, 0, 0, 0));
@@ -113,25 +100,38 @@ public class MessagingPanel extends JPanel {
         chatPanel.add(hint);
     }
 
-    private void refreshConversations() {
+    public void refreshConversations() {
         convList.removeAll();
         ArrayList<String> partners = Database.getConversationPartners(MainFile.currentUser.getUsername());
         for (String p : partners) {
+            int unread = Database.getUnreadCountFromUser(MainFile.currentUser.getUsername(), p);
             JButton btn = new JButton("@" + p);
+            if (unread > 0) {
+                btn.setIcon(new BadgeIcon(unread > 9 ? "9+" : String.valueOf(unread)));
+                btn.setHorizontalTextPosition(SwingConstants.LEFT);
+                btn.setIconTextGap(10);
+            }
             btn.setFont(AppConstants.F_NORMAL);
             btn.setHorizontalAlignment(SwingConstants.LEFT);
             btn.setBorderPainted(false);
             btn.setBackground(p.equals(selectedUser) ? AppConstants.PRIMARY_LIGHT : new Color(0xFB, 0xFB, 0xFA));
             btn.setMaximumSize(new Dimension(190, 32));
-            btn.addActionListener(e -> { selectedUser = p; loadChat(); refreshConversations(); });
+            btn.addActionListener(e -> { 
+                selectedUser = p; 
+                Database.markMessagesAsRead(MainFile.currentUser.getUsername(), p);
+                loadChat(); 
+                refreshConversations(); 
+            });
             convList.add(btn);
         }
         convList.revalidate(); convList.repaint();
     }
 
-    private void loadChat() {
+    public void loadChat() {
         chatPanel.removeAll();
         if (selectedUser == null) return;
+
+        Database.markMessagesAsRead(MainFile.currentUser.getUsername(), selectedUser);
 
         JLabel header = new JLabel("Chat with @" + selectedUser);
         header.setFont(AppConstants.F_SECTION);
@@ -182,6 +182,24 @@ public class MessagingPanel extends JPanel {
             selectedUser = user.trim();
             loadChat();
             refreshConversations();
+        }
+    }
+
+    private static class BadgeIcon implements Icon {
+        private String text;
+        public BadgeIcon(String text) { this.text = text; }
+        public int getIconWidth() { return 24; }
+        public int getIconHeight() { return 24; }
+        public void paintIcon(Component c, Graphics g, int x, int y) {
+            Graphics2D g2 = (Graphics2D) g;
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setColor(AppConstants.DANGER);
+            g2.fillOval(x, y + 2, 20, 20);
+            g2.setColor(Color.WHITE);
+            g2.setFont(new Font("SansSerif", Font.BOLD, 10));
+            FontMetrics fm = g2.getFontMetrics();
+            int w = fm.stringWidth(text);
+            g2.drawString(text, x + 10 - w / 2, y + 15);
         }
     }
 }

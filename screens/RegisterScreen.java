@@ -72,6 +72,11 @@ public class RegisterScreen extends JPanel {
     }
 
     private void handleRegister() {
+        if (tools.NetworkManager.isClientMode && Database.customDbUrl == null) {
+            UIHelper.showError(this, "Host baglantisi bekleniyor...");
+            return;
+        }
+
         String username = usernameField.getText().trim().toLowerCase();
         String displayName = displayNameField.getText().trim();
         String email = emailField.getText().trim().toLowerCase();

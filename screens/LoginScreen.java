@@ -39,6 +39,7 @@ public class LoginScreen extends JFrame {
     private CardLayout formCardLayout;
     private JPanel formContainer;
     private JButton tabLogin, tabRegister;
+    private JLabel cLbl;
 
     public LoginScreen() {
         setTitle("League of Bilkent");
@@ -48,17 +49,47 @@ public class LoginScreen extends JFrame {
         setResizable(false);
         refreshUsers();
         buildUI();
+        startPolling();
+    }
+
+    private void startPolling() {
+        new Thread(() -> {
+            int lastHash = Database.getDbStateHash();
+            while (true) {
+                try { Thread.sleep(1000); } catch(Exception ignored){}
+                if (!isVisible()) continue;
+                
+                SwingUtilities.invokeLater(() -> {
+                    if (cLbl != null) {
+                        String status = Database.customDbUrl == null ? "Local Database" : "Connected: " + Database.customDbUrl.split("//")[1].split(":")[0];
+                        if (tools.NetworkManager.isClientMode && Database.customDbUrl == null) status = "Searching for Host...";
+                        cLbl.setText(status);
+                        cLbl.setForeground(Database.customDbUrl == null ? AppConstants.TEXT_LIGHT : AppConstants.SUCCESS);
+                        cLbl.repaint();
+                    }
+                });
+
+                int newHash = Database.getDbStateHash();
+                if (newHash != -1 && newHash != lastHash) {
+                    lastHash = newHash;
+                    SwingUtilities.invokeLater(this::refreshUsers);
+                }
+            }
+        }).start();
     }
 
     public void refreshUsers() { users = Database.getAllUsers(); }
 
     private void buildUI() {
+        getContentPane().removeAll();
         JPanel main = new JPanel(new BorderLayout());
         main.setBackground(Color.WHITE);
 
         main.add(buildFormPanel(), BorderLayout.CENTER);
 
         setContentPane(main);
+        revalidate();
+        repaint();
     }
 
     private JPanel buildBrandPanel() {
@@ -177,7 +208,28 @@ public class LoginScreen extends JFrame {
         wrapper.setBackground(Color.WHITE);
         wrapper.setMaximumSize(new Dimension(340, 500));
 
-        // Welcome text
+        JPanel headerRow = new JPanel(new BorderLayout());
+        headerRow.setBackground(Color.WHITE);
+        headerRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+
+        cLbl = new JLabel();
+        cLbl.setFont(new Font("SansSerif", Font.BOLD, 12));
+        headerRow.add(cLbl, BorderLayout.WEST);
+
+        JButton netBtn = new JButton(UIManager.getIcon("FileView.computerIcon"));
+        netBtn.setToolTipText("Network Settings");
+        netBtn.setBorderPainted(false);
+        netBtn.setContentAreaFilled(false);
+        netBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        netBtn.addActionListener(e -> {
+            new panels.NetworkDialog(this).setVisible(true);
+            buildUI(); // Redraw status
+        });
+        headerRow.add(netBtn, BorderLayout.EAST);
+
+        wrapper.add(headerRow);
+        wrapper.add(Box.createVerticalStrut(10));
+
         JLabel welcomeLbl = new JLabel("Welcome back");
         welcomeLbl.setFont(new Font("SansSerif", Font.BOLD, 24));
         welcomeLbl.setForeground(AppConstants.TEXT_PRI);
@@ -448,6 +500,10 @@ public class LoginScreen extends JFrame {
     }
 
     private void handleLogin() {
+        if (tools.NetworkManager.isClientMode && Database.customDbUrl == null) {
+            UIHelper.showError(this, "Host baglantisi bekleniyor...");
+            return;
+        }
         String username = loginUsername.getText().trim().toLowerCase();
         if (username.equals("enter your username")) username = "";
         String password = new String(loginPassword.getPassword());

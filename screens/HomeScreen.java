@@ -47,6 +47,11 @@ public class HomeScreen extends JFrame {
     private ProfilePanel myProfilePanel;
     private ProfilePanel viewedProfilePanel;
     private java.util.Stack<User> profileStack = new java.util.Stack<>();
+    private String currentView = "feed";
+    private User currentProfileTarget = null;
+    private Event currentEventTarget = null;
+    private MessagingPanel messagingPanel;
+    private JButton messagesNavBtn;
 
     public HomeScreen() {
         setTitle("League of Bilkent - " + MainFile.currentUser.getDisplayName());
@@ -60,6 +65,76 @@ public class HomeScreen extends JFrame {
         add(buildSideNav(), BorderLayout.WEST);
         add(buildContent(), BorderLayout.CENTER);
         cardLayout.show(contentPanel, "feed");
+        startPolling();
+    }
+
+    private void startPolling() {
+        new Thread(() -> {
+            int lastHash = Database.getDbStateHash();
+            while (true) {
+                try { Thread.sleep(1000); } catch(Exception ignored){}
+                if (!isVisible()) continue;
+                int newHash = Database.getDbStateHash();
+                if (newHash != -1 && newHash != lastHash) {
+                    lastHash = newHash;
+                    SwingUtilities.invokeLater(() -> {
+                        refreshCurrentView();
+                        updateBadges();
+                    });
+                }
+            }
+        }).start();
+    }
+
+    private void updateBadges() {
+        if (messagesNavBtn != null) {
+            int unread = Database.getUnreadMessageCount(MainFile.currentUser.getUsername());
+            if (unread > 0) {
+                messagesNavBtn.setIcon(new BadgeIcon(unread > 9 ? "9+" : String.valueOf(unread)));
+                messagesNavBtn.setHorizontalTextPosition(SwingConstants.LEFT);
+                messagesNavBtn.setIconTextGap(10);
+            } else {
+                messagesNavBtn.setIcon(null);
+            }
+        }
+    }
+
+    private void refreshCurrentView() {
+        if(currentView.equals("feed")) showFeed();
+        else if(currentView.equals("discover")) showPanel(new DiscoverPanel(this), "discover");
+        else if(currentView.equals("calendar")) showPanel(new CalendarPanel(this), "calendar");
+        else if(currentView.equals("messages")) {
+            if (messagingPanel == null) {
+                messagingPanel = new MessagingPanel(this);
+                showPanel(messagingPanel, "messages");
+            } else {
+                messagingPanel.refreshConversations();
+                messagingPanel.loadChat();
+            }
+        }
+        else if(currentView.equals("leaderboard")) showPanel(new LeaderboardPanel(this), "leaderboard");
+        else if(currentView.equals("notif")) showPanel(new NotificationsPanel(this), "notif");
+        else if(currentView.equals("myProfile")) showMyProfile();
+        else if(currentView.equals("viewProfile")) {
+            if(!profileStack.isEmpty()) {
+                currentProfileTarget = profileStack.peek();
+                currentProfileTarget = Database.getUserWithUsername(currentProfileTarget.getUsername());
+                viewedProfilePanel = new ProfilePanel(currentProfileTarget, this, true);
+                contentPanel.add(viewedProfilePanel, "viewProfile");
+                cardLayout.show(contentPanel, "viewProfile");
+            }
+        }
+        else if(currentView.equals("detail")) {
+            if(currentEventTarget != null) {
+                for(Event e : Database.getAllEvents()) {
+                    if(e.getId() == currentEventTarget.getId()) {
+                       currentEventTarget = e;
+                       break;
+                    }
+                }
+                showEventDetail(currentEventTarget);
+            }
+        }
     }
 
     private JPanel buildTopBar() {
@@ -77,6 +152,13 @@ public class HomeScreen extends JFrame {
         brand.setForeground(AppConstants.TEXT_PRI);
         brand.setMaximumSize(brand.getPreferredSize());
         bar.add(brand);
+
+        bar.add(Box.createHorizontalStrut(15));
+        String connTxt = Database.customDbUrl == null ? " [Local] " : " [Connected: " + Database.customDbUrl.split("//")[1].split(":")[0] + "] ";
+        JLabel statusLbl = new JLabel(connTxt);
+        statusLbl.setFont(new Font("SansSerif", Font.BOLD, 12));
+        statusLbl.setForeground(Database.customDbUrl == null ? AppConstants.TEXT_LIGHT : AppConstants.SUCCESS);
+        bar.add(statusLbl);
 
         bar.add(Box.createHorizontalGlue());
 
@@ -142,6 +224,24 @@ public class HomeScreen extends JFrame {
         return bar;
     }
 
+    private static class BadgeIcon implements Icon {
+        private String text;
+        public BadgeIcon(String text) { this.text = text; }
+        public int getIconWidth() { return 24; }
+        public int getIconHeight() { return 24; }
+        public void paintIcon(Component c, Graphics g, int x, int y) {
+            Graphics2D g2 = (Graphics2D) g;
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setColor(AppConstants.DANGER);
+            g2.fillOval(x, y + 2, 20, 20);
+            g2.setColor(Color.WHITE);
+            g2.setFont(new Font("SansSerif", Font.BOLD, 10));
+            FontMetrics fm = g2.getFontMetrics();
+            int w = fm.stringWidth(text);
+            g2.drawString(text, x + 10 - w / 2, y + 15);
+        }
+    }
+
     private JPanel buildSideNav() {
         JPanel nav = new JPanel();
         nav.setLayout(new BoxLayout(nav, BoxLayout.Y_AXIS));
@@ -155,6 +255,7 @@ public class HomeScreen extends JFrame {
         String[] actions = {"feed", "discover", "calendar", "messages", "leaderboard", "notif"};
         for (int i = 0; i < tabs.length; i++) {
             JButton btn = createNavLink(tabs[i], i == 0);
+            if (tabs[i].equals("Messages")) messagesNavBtn = btn;
             btn.setHorizontalAlignment(SwingConstants.LEFT);
             btn.setAlignmentX(LEFT_ALIGNMENT);
             btn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 34));
@@ -164,7 +265,10 @@ public class HomeScreen extends JFrame {
                     case "feed": showFeed(); break;
                     case "discover": showPanel(new DiscoverPanel(this), "discover"); break;
                     case "calendar": showPanel(new CalendarPanel(this), "calendar"); break;
-                    case "messages": showPanel(new MessagingPanel(this), "messages"); break;
+                    case "messages": 
+                        if (messagingPanel == null) messagingPanel = new MessagingPanel(HomeScreen.this);
+                        showPanel(messagingPanel, "messages"); 
+                        break;
                     case "leaderboard": showPanel(new LeaderboardPanel(this), "leaderboard"); break;
                     case "notif": showPanel(new NotificationsPanel(this), "notif"); break;
                 }
@@ -191,6 +295,7 @@ public class HomeScreen extends JFrame {
     }
 
     private void showPanel(JPanel panel, String name) {
+        currentView = name;
         contentPanel.add(panel, name);
         cardLayout.show(contentPanel, name);
     }
@@ -203,8 +308,12 @@ public class HomeScreen extends JFrame {
     }
 
     public void navigateToProfile(User user) {
+        currentProfileTarget = user;
         if (user.getUsername().equals(MainFile.currentUser.getUsername())) { showMyProfile(); return; }
-        profileStack.push(user);
+        // If not already on top of stack, push it
+        if (profileStack.isEmpty() || !profileStack.peek().getUsername().equals(user.getUsername())) {
+            profileStack.push(user);
+        }
         viewedProfilePanel = new ProfilePanel(user, this, true);
         showPanel(viewedProfilePanel, "viewProfile");
     }
@@ -213,12 +322,14 @@ public class HomeScreen extends JFrame {
         if (!profileStack.isEmpty()) profileStack.pop();
         if (!profileStack.isEmpty()) {
             User prev = profileStack.peek();
+            currentProfileTarget = prev;
             viewedProfilePanel = new ProfilePanel(prev, this, true);
             showPanel(viewedProfilePanel, "viewProfile");
         } else { showFeed(); }
     }
 
     public void showEventDetail(Event event) {
+        currentEventTarget = event;
         showPanel(new EventDetailPanel(event, this), "detail");
     }
 
