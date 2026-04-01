@@ -1,5 +1,7 @@
 # League of Bilkent
 
+ben damlaaaaaa
+
 A campus event discovery and social engagement platform designed for Bilkent University students and clubs. Students can create, discover, and attend campus events while earning XP and climbing tier ranks through participation.
 
 ## Features
