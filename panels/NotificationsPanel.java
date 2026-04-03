@@ -1,25 +1,11 @@
 package panels;
-
 import model.*;
 import screens.*;
 import tools.*;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-/*
- * ┌──────────────────────────────────────────────────────────────┐
- * │              <<class>> NotificationsPanel                   │
- * │                   extends JPanel                             │
- * │     Displays user notifications in reverse chronological    │
- * ├──────────────────────────────────────────────────────────────┤
- * │ + NotificationsPanel(home) -> builds notification list      │
- * ├──────────────────────────────────────────────────────────────┤
- * │ USES:    Database, MainFile, UIHelper, AppConstants          │
- * │ USED BY: HomeScreen (notification bell button)              │
- * └──────────────────────────────────────────────────────────────┘
- */
 public class NotificationsPanel extends JPanel {
 
     public NotificationsPanel(HomeScreen home) {
