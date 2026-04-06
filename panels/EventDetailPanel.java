@@ -7,32 +7,32 @@ import tools.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 /*
- * ┌──────────────────────────────────────────────────────────────────┐
- * │                <<class>> EventDetailPanel                      │
- * │                    extends JPanel                              │
- * │          Full event details with attendance + comments         │
- * ├──────────────────────────────────────────────────────────────────┤
- * │ - event: Event -> event being displayed                        │
- * │ - homeScreen: HomeScreen -> navigation reference               │
- * ├──────────────────────────────────────────────────────────────────┤
- * │ + EventDetailPanel(event, homeScreen)                          │
- * │ - createBody() -> scrollable detail view                       │
- * │ - createProp(label, value) -> key-value property row           │
- * │ - buildAttendanceSection() -> Going/Interested/Maybe buttons   │
- * │ - buildAttendeesSection() -> attendee list with clickable names│
- * │ - buildCommentsSection() -> threaded comments with reply       │
- * │ - createCommentRow(comment, indent) -> single comment          │
- * │ - createCommentInput(parentId) -> text field + send button     │
- * │ - createStatusBtn(text, color, selected) -> RSVP button        │
- * ├──────────────────────────────────────────────────────────────────┤
- * │ USES:    HomeScreen, Database, MainFile, UIHelper, AppConstants,│
- * │          Event, Comment, AttendanceStatus, User                 │
- * │ USED BY: HomeScreen.showEventDetail                            │
- * └──────────────────────────────────────────────────────────────────┘
+ * +--------------------------------------------------------------+
+ * |                <<class>> eventdetailpanel                     |
+ * |                    extends jpanel                             |
+ * |          full event details with attendance + comments        |
+ * +--------------------------------------------------------------+
+ * | - event: event -> event being displayed                       |
+ * | - homescreen: homescreen -> navigation reference              |
+ * +--------------------------------------------------------------+
+ * | + eventdetailpanel(event, homescreen)                         |
+ * | - createbody() -> scrollable detail view                      |
+ * | - createprop(label, value) -> key-value property row          |
+ * | - buildattendancesection() -> going/interested/maybe buttons  |
+ * | - buildattendeessection() -> attendee list with clickable     |
+ * | - buildcommentssection() -> threaded comments with reply      |
+ * | - createcommentrow(comment, indent) -> single comment         |
+ * | - createcommentinput(parentid) -> text field + send button    |
+ * | - createstatusbtn(text, color, selected) -> rsvp button       |
+ * +--------------------------------------------------------------+
+ * | uses:    homescreen, database, mainfile, uihelper,            |
+ * |          appconstants, event, comment, attendancestatus, user |
+ * | used by: homescreen.showeventdetail                           |
+ * +--------------------------------------------------------------+
  */
 public class EventDetailPanel extends JPanel {
 
@@ -57,7 +57,11 @@ public class EventDetailPanel extends JPanel {
         btnBack.setContentAreaFilled(false);
         btnBack.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnBack.setAlignmentX(LEFT_ALIGNMENT);
-        btnBack.addActionListener(e -> homeScreen.showFeed());
+        btnBack.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                homeScreen.showFeed();
+            }
+        });
         body.add(btnBack);
         body.add(Box.createVerticalStrut(20));
 
@@ -69,20 +73,26 @@ public class EventDetailPanel extends JPanel {
         body.add(Box.createVerticalStrut(16));
 
         body.add(createProp("Created by", event.getCreatorUsername()));
-        if (!event.getDescription().isEmpty())
+        if (!event.getDescription().isEmpty()) {
             body.add(createProp("Description", event.getDescription()));
+        }
         body.add(createProp("Location", event.getLocation()));
         body.add(createProp("Start", event.getDateStr()));
-        if (event.getEndDateTime() != null)
+        if (event.getEndDateTime() != null) {
             body.add(createProp("End", event.getEndDateStr()));
+        }
         if (event.getRegistrationDeadline() != null) {
-            String dl = event.getDeadlineStr() + (event.isDeadlinePassed() ? "  (EXPIRED)" : "");
+            String dl = event.getDeadlineStr();
+            if (event.isDeadlinePassed()) {
+                dl = dl + "  (EXPIRED)";
+            }
             body.add(createProp("Deadline", dl));
         }
         body.add(createProp("Capacity", event.getGoingCount() + " / " + event.getCapacity()));
         body.add(createProp("XP Reward", "+" + event.getXpReward() + " XP"));
-        if (event.getMinTierIndex() > 0)
+        if (event.getMinTierIndex() > 0) {
             body.add(createProp("Min. Tier", event.getMinTierName()));
+        }
 
         if (!event.getTags().isEmpty()) {
             JPanel tagRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
@@ -105,12 +115,14 @@ public class EventDetailPanel extends JPanel {
         if (event.getCreatorUsername().equals(MainFile.currentUser.getUsername())) {
             JButton btnDel = UIHelper.createOutlineButton(AppConstants.BTN_DELETE, AppConstants.DANGER);
             btnDel.setAlignmentX(LEFT_ALIGNMENT);
-            btnDel.addActionListener(ev -> {
-                if (UIHelper.showConfirm(this, AppConstants.CONFIRM_DELETE)) {
-                    Database.deleteFromDatabase(event);
-                    Database.addXP(MainFile.currentUser.getUsername(), AppConstants.XP_CANCEL_EVENT);
-                    UIHelper.showSuccess(this, AppConstants.SUC_EVENT_DELETED);
-                    homeScreen.showFeed();
+            btnDel.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ev) {
+                    if (UIHelper.showConfirm(EventDetailPanel.this, AppConstants.CONFIRM_DELETE)) {
+                        Database.deleteFromDatabase(event);
+                        Database.addXP(MainFile.currentUser.getUsername(), AppConstants.XP_CANCEL_EVENT);
+                        UIHelper.showSuccess(EventDetailPanel.this, AppConstants.SUC_EVENT_DELETED);
+                        homeScreen.showFeed();
+                    }
                 }
             });
             body.add(btnDel);
@@ -168,27 +180,47 @@ public class EventDetailPanel extends JPanel {
         boolean deadlinePassed = event.isDeadlinePassed();
 
         JButton btnGo = createStatusBtn(AppConstants.BTN_GOING, AppConstants.COLOR_GOING, current == AttendanceStatus.GOING);
-        btnGo.addActionListener(e -> {
-            if (current == AttendanceStatus.GOING) {
-                homeScreen.changeAttendance(event, null);
-            } else {
-                if (deadlinePassed) { UIHelper.showError(this, AppConstants.ERR_DEADLINE_PASSED); return; }
-                if (!event.canJoin(Database.getUserXP(me))) { UIHelper.showError(this, "You need " + event.getMinTierName() + " tier!"); return; }
-                homeScreen.changeAttendance(event, AttendanceStatus.GOING);
+        btnGo.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (current == AttendanceStatus.GOING) {
+                    homeScreen.changeAttendance(event, null);
+                } else {
+                    if (deadlinePassed) {
+                        UIHelper.showError(EventDetailPanel.this, AppConstants.ERR_DEADLINE_PASSED);
+                        return;
+                    }
+                    if (!event.canJoin(Database.getUserXP(me))) {
+                        UIHelper.showError(EventDetailPanel.this, "You need " + event.getMinTierName() + " tier!");
+                        return;
+                    }
+                    homeScreen.changeAttendance(event, AttendanceStatus.GOING);
+                }
+                homeScreen.showEventDetail(event);
             }
-            homeScreen.showEventDetail(event);
         });
 
         JButton btnInt = createStatusBtn(AppConstants.BTN_INTERESTED, AppConstants.COLOR_INTERESTED, current == AttendanceStatus.INTERESTED);
-        btnInt.addActionListener(e -> {
-            homeScreen.changeAttendance(event, current == AttendanceStatus.INTERESTED ? null : AttendanceStatus.INTERESTED);
-            homeScreen.showEventDetail(event);
+        btnInt.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (current == AttendanceStatus.INTERESTED) {
+                    homeScreen.changeAttendance(event, null);
+                } else {
+                    homeScreen.changeAttendance(event, AttendanceStatus.INTERESTED);
+                }
+                homeScreen.showEventDetail(event);
+            }
         });
 
         JButton btnMay = createStatusBtn(AppConstants.BTN_MAYBE, AppConstants.COLOR_MAYBE, current == AttendanceStatus.MAYBE);
-        btnMay.addActionListener(e -> {
-            homeScreen.changeAttendance(event, current == AttendanceStatus.MAYBE ? null : AttendanceStatus.MAYBE);
-            homeScreen.showEventDetail(event);
+        btnMay.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (current == AttendanceStatus.MAYBE) {
+                    homeScreen.changeAttendance(event, null);
+                } else {
+                    homeScreen.changeAttendance(event, AttendanceStatus.MAYBE);
+                }
+                homeScreen.showEventDetail(event);
+            }
         });
 
         btnRow.add(btnGo);
@@ -200,8 +232,11 @@ public class EventDetailPanel extends JPanel {
     }
 
     private JButton createStatusBtn(String text, Color color, boolean selected) {
-        return selected ? UIHelper.createButton(text + " \u2713", color, Color.WHITE)
-                        : UIHelper.createOutlineButton(text, color);
+        if (selected) {
+            return UIHelper.createButton(text + " \u2713", color, Color.WHITE);
+        } else {
+            return UIHelper.createOutlineButton(text, color);
+        }
     }
 
     private JPanel buildAttendeesSection() {
@@ -215,8 +250,9 @@ public class EventDetailPanel extends JPanel {
         headerRow.setAlignmentX(LEFT_ALIGNMENT);
         headerRow.add(UIHelper.createSectionLabel(AppConstants.SEC_ATTENDEES));
         headerRow.add(UIHelper.createBadgeLabel(event.getGoingCount() + " " + AppConstants.BTN_GOING, AppConstants.COLOR_GOING, Color.WHITE));
-        if (event.getInterestedCount() > 0)
+        if (event.getInterestedCount() > 0) {
             headerRow.add(UIHelper.createBadgeLabel(event.getInterestedCount() + " " + AppConstants.BTN_INTERESTED, AppConstants.COLOR_INTERESTED, Color.WHITE));
+        }
         section.add(headerRow);
         section.add(Box.createVerticalStrut(10));
 
@@ -228,7 +264,9 @@ public class EventDetailPanel extends JPanel {
         } else {
             for (String uname : event.getAttendees()) {
                 User u = Database.getUserWithUsername(uname);
-                if (u != null) list.add(UIHelper.createClickableUsername(u, homeScreen));
+                if (u != null) {
+                    list.add(UIHelper.createClickableUsername(u, homeScreen));
+                }
             }
         }
         section.add(list);
@@ -246,8 +284,12 @@ public class EventDetailPanel extends JPanel {
         section.add(createCommentInput(0));
         section.add(Box.createVerticalStrut(14));
 
-        ArrayList<Comment> topLevel = event.getComments().stream()
-            .filter(c -> !c.isReply()).collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<Comment> topLevel = new ArrayList<Comment>();
+        for (Comment c : event.getComments()) {
+            if (!c.isReply()) {
+                topLevel.add(c);
+            }
+        }
 
         if (topLevel.isEmpty()) {
             section.add(UIHelper.createSmallLabel(AppConstants.EMPTY_COMMENTS));
@@ -255,7 +297,9 @@ public class EventDetailPanel extends JPanel {
             for (Comment c : topLevel) {
                 section.add(createCommentRow(c, 0));
                 for (Comment reply : event.getComments()) {
-                    if (reply.getParentId() == c.getId()) section.add(createCommentRow(reply, 1));
+                    if (reply.getParentId() == c.getId()) {
+                        section.add(createCommentRow(reply, 1));
+                    }
                 }
             }
         }
@@ -264,7 +308,11 @@ public class EventDetailPanel extends JPanel {
 
     private JPanel createCommentRow(Comment comment, int indent) {
         JPanel row = new JPanel(new BorderLayout(12, 0));
-        row.setBackground(indent > 0 ? AppConstants.PRIMARY_LIGHT : Color.WHITE);
+        if (indent > 0) {
+            row.setBackground(AppConstants.PRIMARY_LIGHT);
+        } else {
+            row.setBackground(Color.WHITE);
+        }
         row.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createMatteBorder(0, 0, 1, 0, AppConstants.BORDER),
             BorderFactory.createEmptyBorder(14, 14 + indent * 32, 14, 14)));
@@ -288,8 +336,11 @@ public class EventDetailPanel extends JPanel {
             nameLbl.setFont(new Font("SansSerif", Font.BOLD, 13));
             nameLbl.setForeground(AppConstants.TEXT_PRI);
             nameLbl.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            nameLbl.addMouseListener(new java.awt.event.MouseAdapter() {
-                public void mouseClicked(java.awt.event.MouseEvent e) { homeScreen.navigateToProfile(commenter); }
+            final User finalCommenter = commenter;
+            nameLbl.addMouseListener(new MouseAdapter() {
+                public void mouseClicked(MouseEvent e) {
+                    homeScreen.navigateToProfile(finalCommenter);
+                }
             });
             topRow.add(nameLbl);
         }
@@ -308,12 +359,14 @@ public class EventDetailPanel extends JPanel {
 
         if (indent == 0) {
             JButton btnReply = UIHelper.createOutlineButton(AppConstants.BTN_REPLY, AppConstants.TEXT_SEC);
-            btnReply.addActionListener(e -> {
-                String reply = JOptionPane.showInputDialog(this,
-                    "Reply to @" + comment.getUsername() + ":", AppConstants.DLG_REPLY, JOptionPane.PLAIN_MESSAGE);
-                if (reply != null && !reply.trim().isEmpty()) {
-                    homeScreen.addComment(event, reply.trim(), comment.getId());
-                    homeScreen.showEventDetail(event);
+            btnReply.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    String reply = JOptionPane.showInputDialog(EventDetailPanel.this,
+                        "Reply to @" + comment.getUsername() + ":", AppConstants.DLG_REPLY, JOptionPane.PLAIN_MESSAGE);
+                    if (reply != null && !reply.trim().isEmpty()) {
+                        homeScreen.addComment(event, reply.trim(), comment.getId());
+                        homeScreen.showEventDetail(event);
+                    }
                 }
             });
             row.add(btnReply, BorderLayout.EAST);
@@ -330,15 +383,17 @@ public class EventDetailPanel extends JPanel {
         JTextField field = UIHelper.createStyledField();
         JButton btnSend = UIHelper.createButton(AppConstants.BTN_SEND, AppConstants.PRIMARY, Color.WHITE);
 
-        Runnable send = () -> {
-            String text = field.getText().trim();
-            if (!text.isEmpty()) {
-                homeScreen.addComment(event, text, parentId);
-                homeScreen.showEventDetail(event);
+        ActionListener sendAction = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String text = field.getText().trim();
+                if (!text.isEmpty()) {
+                    homeScreen.addComment(event, text, parentId);
+                    homeScreen.showEventDetail(event);
+                }
             }
         };
-        btnSend.addActionListener(e -> send.run());
-        field.addActionListener(e -> send.run());
+        btnSend.addActionListener(sendAction);
+        field.addActionListener(sendAction);
 
         panel.add(field, BorderLayout.CENTER);
         panel.add(btnSend, BorderLayout.EAST);
